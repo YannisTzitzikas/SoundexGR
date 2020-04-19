@@ -22,7 +22,7 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
  *
  * @author: Antrei Kavros
  */
- */
+ 
 public class BulkCheck {
     ArrayList<Integer> score = new ArrayList<>();
     int correct = 0, total = 0;
