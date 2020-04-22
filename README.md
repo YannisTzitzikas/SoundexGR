@@ -55,6 +55,10 @@ A Soundex-like phonetic algorithm for the Greek language.
  * client/Prompt: for computing the codes for words inputed through the  command line
  * evaluation/BulkCheck: for running  experiments  over an evaluation collection that is included (in the folder Resources)
  
+ # More Information:
+ More information is available in the following paper:
+ * Antrei Kavros and Yannis Tzitzikas, A Soundex-like Algorithm for the Greek Language, (under submission), 2020
+ 
  # Persons Involved:
  * Antrei Kavros
  * Yannis Tzitzikas
