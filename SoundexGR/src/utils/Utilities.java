@@ -3,11 +3,7 @@
  */
 
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package utils;
 
 import java.io.BufferedReader;
@@ -27,16 +23,21 @@ import java.util.TreeMap;
 
 public class Utilities {
 
-    LinkedHashSet<String> names = new LinkedHashSet<>();
+    LinkedHashSet<String> names = new LinkedHashSet<>();  //  a set of names
     LinkedHashSet<String> errNames = new LinkedHashSet<>();
     TreeMap<String, String> wcPair = new TreeMap<>();
     TreeMap<String, String> cwPair = new TreeMap<>();
 
     SecureRandom rand = new SecureRandom();
 
+    /**
+     * reads the filename and fills the hashset names
+     * @param path
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     public void readFile(String path) throws FileNotFoundException, IOException {
-    	
-    	
+    	    	
         FileReader fl = new FileReader(path);
         BufferedReader bfr = new BufferedReader(fl);
         String line;
@@ -48,6 +49,9 @@ public class Utilities {
         }
     }
 
+    /**
+     * clears the names
+     */
     public void clear() {
         this.names.clear();
     }
@@ -103,6 +107,14 @@ public class Utilities {
         }
         return sb.toString();
     }
+    /**
+     * It takes as input a query word and the phonetic alg to be used
+     * and returns the words that have the same code
+     * It pre-suposes "names" which is ..
+     * @param query the query code
+     * @param type the algorithm to be used (soundex, original, combine)
+     * @return an arraylist of strings
+     */
 
     public ArrayList<String> search(String query, String type) {
         ArrayList<String> res = new ArrayList<>();
@@ -121,7 +133,7 @@ public class Utilities {
                 }
 
             }
-        } else if(type.compareTo("combine")==0){
+        } else if(type.compareTo("combine")==0){   // yes if at least one of the codes (of Simple or Extra) is the smae
             for (String word : names) {
                 if (SoundexGRExtra.encode(word).compareTo(SoundexGRExtra.encode(query)) == 0 ||
                         SoundexGRSimple.encode(word).compareTo(SoundexGRSimple.encode(query)) == 0) {
