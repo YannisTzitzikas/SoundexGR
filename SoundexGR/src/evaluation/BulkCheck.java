@@ -20,7 +20,7 @@ import utils.Utilities;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 /**
  *
- * @author: Antrei Kavros
+ * @author: Antrei Kavros (additions by Yannis Tzitzikas)
  */
  
 public class BulkCheck {
@@ -174,7 +174,7 @@ public class BulkCheck {
     }
     
     /** 
-     * Ongoing: C
+     * Refactored code: Performs all the experiments
      */
     public static void performExperimentsNew() {
     	Utilities utils = new Utilities();
@@ -218,17 +218,22 @@ public class BulkCheck {
 
     
     /** 
-     * Ongoing: Comparison with Soundex
+     * Comparing the performance of Stemming
      */
     public static void performExperimentsWithStemmer() {
     	Utilities utils = new Utilities();
         BulkCheck bulkCheckRun = new BulkCheck();
         
-        System.out.println("ONGOING: Comparison with Stemming");
+        System.out.println("Evaluating the peformance of *stemming*");
+        String DatasetFiles[]		= {
+            	"Resources/names/additions.txt", 		// additions
+            	"Resources/names/subs.txt", 			// subtitutions
+            	"Resources/names/deletions.txt", 		// deletions			
+            	"Resources/names/same_sounded.txt" 		// same sounded
+            };  // evaluation collections
         
-        String DatasetFiles[]		= { "Resources/names/same_sounded.txt"};  // evaluation collections
-        String OptionsToEvaluate[] 	= { "soundex", "original", "combine" };
-        String outputFile     		=  "Resources/names/results/sames-new.txt"	;   // file for writting
+        String OptionsToEvaluate[] 	= { "stemcase"};
+        String outputFile     		=  "Resources/names/results/sames-stemmer.txt"	;   // file for writting
 
         try {
             for (String datasetFile: DatasetFiles) { // for each dataset file
@@ -240,8 +245,7 @@ public class BulkCheck {
             		System.out.println("-------------------------------------------------");
             	}
             	utils.clear();
-            }
-            
+            }    
         } catch (IOException ex) {
         	System.out.println(ex);
             Logger.getLogger(BulkCheck.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,7 +254,7 @@ public class BulkCheck {
 
     public static void main(String[] args) {
     	//performExperiments(); // the original experiments
-    	performExperimentsNew(); // the refactored one by Yannis Tzitzikas
-    	//performExperimentsWithStemmer();  // Ongoing: Experiments with Soundex
+    	performExperimentsNew(); // the refactored code for the experiments Yannis Tzitzikas
+    	//performExperimentsWithStemmer();  // evaluation of a Greek stemmer
         }
 }

@@ -1,5 +1,5 @@
 /**
- * @author: Antrei Kavros
+ * @author: Antrei Kavros (refactoring and additions by Yannis Tzitzikas)
  */
 
 
@@ -16,6 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.Scanner;
 import SoundexGR.SoundexGRExtra;
 import SoundexGR.SoundexGRSimple;
+import stemmerWrapper.StemmerWrapper;
+
 import java.io.FileWriter;
 
 import java.security.SecureRandom;
@@ -141,8 +143,23 @@ public class Utilities {
                 }
 
             }
+        }  else if (type.compareTo("stemcase") == 0) {  // new ongoing (tests a stemmer over the collection
+        
+        	StemmerWrapper stemmer = new StemmerWrapper();
+        	
+            for (String word : names) {
+            	//System.out.print(word + " vs " + query + ":" + stemmer.getStemOf(word) +"<->"+ stemmer.getStemOf(query));
+            	if (stemmer.getStemOf(word).compareTo(stemmer.getStemOf(query)) == 0) {
+            		//System.out.println("[Correct]");
+            		
+                    res.add(word);
+                } else {
+                	//System.out.println("[Wrong]");
+                }
+            
+           }
         }
-
+ 
         return res;
     }
 
