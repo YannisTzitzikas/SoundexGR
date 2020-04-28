@@ -190,6 +190,10 @@ public class SoundexGRExtra {
                             tmp[i] = 'ο';
                             tmp[i + 1] = ' ';
                         }
+                        if (tmp[i + 1] == 'ύ') {
+                            tmp[i] = 'ο';
+                            tmp[i + 1] = ' ';
+                        }
                         
                     } else {
                         tmp[i] = 'ο';
@@ -414,27 +418,27 @@ public class SoundexGRExtra {
                     break;
                 case 'κ':
                 case 'g':
-                    res[i] = 'z';
+                    res[i] = '5';
                     break;
                 case 'λ':
-                    res[i] = '7';
+                    res[i] = '6';
                     break;
                 case 'μ':
                 case 'ν':
-                    res[i] = '8';
+                    res[i] = '7';
                     break;
                 case 'ρ':
-                    res[i] = '9';
+                    res[i] = '8';
                     break;
                 case 'α':
+                    res[i] = '9';
+                    break;
+                case 'ε':
                     res[i] = '*';
                     break;
                 case 'ο':
                 case 'ω':
-                    res[i] = '&';
-                    break;
-                case 'ε':
-                    res[i] = '^';
+                    res[i] = '$';
                     break;
                 case 'ι':
                     res[i] = '@';
@@ -456,7 +460,7 @@ public class SoundexGRExtra {
             }
 
         }
-        finalResult += "00000000"; // 5 letter length encoding
+        finalResult += "00000000"; // 4 letter length encoding
         return finalResult.substring(0, 4);
     }
 }
