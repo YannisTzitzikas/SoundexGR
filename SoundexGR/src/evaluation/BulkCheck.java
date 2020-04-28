@@ -109,6 +109,7 @@ public class BulkCheck {
 
     /** 
      * Performs the experiments:  Comparative Evaluation of various Soundex-like algorithms
+     * (the old one)
      */
     public static void performExperiments() {
     	Utilities utils = new Utilities();
@@ -189,7 +190,7 @@ public class BulkCheck {
         	"Resources/names/same_sounded.txt" 		// same sounded
         };  // evaluation collections
         
-        String OptionsToEvaluate[] 	= { "soundex", "original", "combine" };
+        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex" };
         String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writting
 
         try {
@@ -209,9 +210,7 @@ public class BulkCheck {
             	}
             	utils.clear();
             }
-            
         } catch (IOException ex) {
-        	System.out.print(ex);
             Logger.getLogger(BulkCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -233,7 +232,7 @@ public class BulkCheck {
             };  // evaluation collections
         
         String OptionsToEvaluate[] 	= { "stemcase"};
-        String outputFile     		=  "Resources/names/results/sames-stemmer.txt"	;   // file for writting
+        String outputFile     		=  "Resources/names/results/sames-stemmer.txt"	;   // file for writing
 
         try {
             for (String datasetFile: DatasetFiles) { // for each dataset file

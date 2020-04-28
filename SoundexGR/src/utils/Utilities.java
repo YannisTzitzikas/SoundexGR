@@ -120,9 +120,10 @@ public class Utilities {
 
     public ArrayList<String> search(String query, String type) {
         ArrayList<String> res = new ArrayList<>();
+               
 
         if (type.compareTo("soundex") == 0) {
-            for (String word : names) {
+            for (String word : names) {               
                 if (SoundexGRExtra.encode(word).compareTo(SoundexGRExtra.encode(query)) == 0) {
                     res.add(word);
                 }
@@ -135,7 +136,7 @@ public class Utilities {
                 }
 
             }
-        } else if(type.compareTo("combine")==0){   // yes if at least one of the codes (of Simple or Extra) is the smae
+        } else if(type.compareTo("combine")==0){   // yes if at least one of the codes (of Simple or Extra) is the same
             for (String word : names) {
                 if (SoundexGRExtra.encode(word).compareTo(SoundexGRExtra.encode(query)) == 0 ||
                         SoundexGRSimple.encode(word).compareTo(SoundexGRSimple.encode(query)) == 0) {
@@ -143,26 +144,37 @@ public class Utilities {
                 }
 
             }
-        }  else if (type.compareTo("stemcase") == 0) {  // new ongoing (tests a stemmer over the collection
-        
-        	StemmerWrapper stemmer = new StemmerWrapper();
-        	
+        }  else if (type.compareTo("stemcase") == 0) {  // tests a stemmer over the collection
+           	StemmerWrapper stemmer = new StemmerWrapper();	
             for (String word : names) {
             	//System.out.print(word + " vs " + query + ":" + stemmer.getStemOf(word) +"<->"+ stemmer.getStemOf(query));
             	if (stemmer.getStemOf(word).compareTo(stemmer.getStemOf(query)) == 0) {
             		//System.out.println("[Correct]");
-            		
                     res.add(word);
                 } else {
                 	//System.out.println("[Wrong]");
                 }
-            
            }
+        } else if (type.compareTo("stemAndsoundex") == 0) {  // new ongoing 
+           	StemmerWrapper stemmer = new StemmerWrapper();
+           	String queryStemmed = stemmer.getStemOf(query);
+           	String wordStemmed;
+            for (String word : names) {
+            	wordStemmed = stemmer.getStemOf(word);
+            	if (SoundexGRExtra.encode(wordStemmed).compareTo(SoundexGRExtra.encode(queryStemmed)) == 0) {
+                    res.add(word); //add the word before stemming (for computing correctly the metrics)
+                }
+            }
         }
- 
         return res;
     }
 
+    /**
+     * It returns true if at least one of the codes (SoundexGRExtra or SoundexGRSimple) is the same
+     * @param s1
+     * @param s2
+     * @return
+     */
     public static boolean compareCombined(String s1, String s2){
         if (SoundexGRExtra.encode(s1).compareTo(SoundexGRExtra.encode(s2)) == 0 ||
                 SoundexGRSimple.encode(s1).compareTo(SoundexGRSimple.encode(s2)) == 0) {
