@@ -23,18 +23,20 @@ public class Examples {
 	 * @return
 	 */
 	static public String toLatex(String w) {
-		return w.replace("@","$@$")
-					    .replace("&","\\&")
-					    .replace("^","$\\wedge$");
+		return w.replace("$","\\$")
+				.replace("@","$@$")
+				.replace("&","\\&")
+				.replace("^","$\\wedge$")
+				  ;
 		}
 	
 	public static void main(String[] lala) {
 		System.out.println("**SoundexGR Examples**");
 		String[] testCases = {
-				"Θάλασσα","θάλλασα","θάλασα",
+				"Θάλασσα","θάλλασα","θάλασα", "θαλασών",
 				"μήνυμα","μύνημα","μίνιμα","μοίνειμα",
 				"έτοιμος", "έτιμος", "έτημος", "έτυμος", "έτιμως", "αίτημος",
-				"αυγό","αβγό","αυγολάκια","αβγά", "αυγά","αβγά",
+				"αυγό","αβγό","αυγολάκια","αβγά", "αυγά",
 				"τζατζίκι", "τσατζίκι","τσατσίκι",
 				"κορονοιός", "κοροναιός",
 				"οβελίας", "ωβελύας","οβελίσκος",
