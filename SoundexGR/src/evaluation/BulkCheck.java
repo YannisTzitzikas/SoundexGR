@@ -190,7 +190,7 @@ public class BulkCheck {
         	"Resources/names/same_sounded.txt" 		// same sounded
         };  // evaluation collections
         
-        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex" };
+        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex" };  // Also: stemcase
         String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writting
 
         try {

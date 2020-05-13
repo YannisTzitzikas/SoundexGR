@@ -47,9 +47,9 @@ public class DictionaryBasedMeasurements {
 	        long startTime=0, endTime=0, totalTime = 0;
 	        String wordInSoundex; 
 	        
-	        //extra
+	        //extra for codes' analytics
 	        Map<String, Integer> codesAndCounts = new HashMap<>(); // for code analytics
-	        StemmerWrapper stemmer= new StemmerWrapper (); // for the case we want to peform measurement using a stemmer	        
+	        StemmerWrapper stemmer= new StemmerWrapper (); // for the case we want to perform measurement using a stemmer	        
 	        
 	        
 			try {
@@ -63,8 +63,8 @@ public class DictionaryBasedMeasurements {
 		        	if (curWordSize <wordMinSize ) wordMinSize=curWordSize;  // for min/max word sizes
 		        	if (curWordSize >wordMaxSize ) wordMaxSize =curWordSize;
 		        	
-		        	//wordInSoundex = SoundexGRExtra.encode(line); // for testing SoundexGRExtra
-		        	wordInSoundex = stemmer.getStemOf(line); 		// for testing a stemmer
+		        	wordInSoundex = SoundexGRExtra.encode(line); // for testing SoundexGRExtra
+		        	//wordInSoundex = stemmer.getStemOf(line); 		// for testing a stemmer
 		       
 		        	
 		        	//System.out.printf("%10s --> %s\n", line, wordInSoundex); // for debugging only
@@ -104,7 +104,7 @@ public class DictionaryBasedMeasurements {
 	        
 	        System.out.println("Min number of words of a code: " + minCount);
 	        System.out.println("Max number of words of a code: " + maxCount);
-	        printMap(codesAndCounts);
+	        //printMap(codesAndCounts);
 	}
 	
 	public static void main(String[] args) {

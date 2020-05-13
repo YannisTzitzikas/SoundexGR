@@ -23,6 +23,7 @@ public class SoundexGRExtra {
             case 'μ':
             case 'ν':
             case 'ρ':
+            case 'ζ':     // ΥΤΖ (May 5, 2020)
                 tmp = true;
                 break;
             default:
@@ -375,12 +376,16 @@ public class SoundexGRExtra {
         //The following function calls could be merged together in to one loop for better performance
         word = word.toLowerCase(); // word to lowercase
         word = getDuals(word); // αφαίρεση δίφθογγων - dual letter substitution to single
+        //System.out.println(word + " (after getDuals)");
         word = getVowelAsConsonant(word); // μετατροπή ευ, αυ σε σύμφωνο , αν ακολουθεί κάποιο άηχο ή ηχηρό γράμμα - substitution of υ vowel to consonant if needed
-
+        //System.out.println(word  + " (after getVoelsAsConsonants)");
         // removeLast and removeLastStrict or almost useless, now that the word is trimmed to just 6 digits
         word = removeLastStrict(word);  // αφαίρεση του suffix της λέξης - suffix removal
+        //System.out.println(word  + " (after getLastStrict)");
         word = groupVowels(word); // μετατροπή φωνήεντων πχ αι σε ε - substitute group vowels to single vowel.
+        //System.out.println(word  + " (after groupVowels)");
         word = removeIntonation(word);
+        //System.out.println(word + " (after removeIntonation)");
         word = String.join("", word.split(" "));
 
         char[] givenWord = word.toCharArray();
