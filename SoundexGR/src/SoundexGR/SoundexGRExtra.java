@@ -349,7 +349,7 @@ public class SoundexGRExtra {
      * digram combinations
      * @return the modified string
      */
-    private static String getDuals(String word) {
+    private static String unwrapConsonantBigrams(String word) {
         // Reason for example of μπ -> b and not -> β , is that vowels as consonant operation follows and may 
         // wrongly change to a consonant
         word = word.replace("μπ", "b");
@@ -373,19 +373,22 @@ public class SoundexGRExtra {
      */
     public static String encode(String word) {
 
-        //The following function calls could be merged together in to one loop for better performance
+    	
+	    //The following function calls could be merged together in to one loop for better performance
         word = word.toLowerCase(); // word to lowercase
-        word = getDuals(word); // αφαίρεση δίφθογγων - dual letter substitution to single
-        //System.out.println(word + " (after getDuals)");
+        word = unwrapConsonantBigrams(word); // αφαίρεση δίφθογγων - dual letter substitution to single
+        //System.out.println(word + " (after unwrapConsonantBigrams)");
         word = getVowelAsConsonant(word); // μετατροπή ευ, αυ σε σύμφωνο , αν ακολουθεί κάποιο άηχο ή ηχηρό γράμμα - substitution of υ vowel to consonant if needed
-        //System.out.println(word  + " (after getVoelsAsConsonants)");
+        //System.out.println(" " + word  + " (after getVoelsAsConsonants)");
         // removeLast and removeLastStrict or almost useless, now that the word is trimmed to just 6 digits
         word = removeLastStrict(word);  // αφαίρεση του suffix της λέξης - suffix removal
-        //System.out.println(word  + " (after getLastStrict)");
+        //System.out.println(" " + word  + " (after getLastStrict)");
         word = groupVowels(word); // μετατροπή φωνήεντων πχ αι σε ε - substitute group vowels to single vowel.
-        //System.out.println(word  + " (after groupVowels)");
+        //System.out.println(" " + word  + " (after groupVowels)");
+        
+        
         word = removeIntonation(word);
-        //System.out.println(word + " (after removeIntonation)");
+        //System.out.println(" " + word + " (after removeIntonation)");
         word = String.join("", word.split(" "));
 
         char[] givenWord = word.toCharArray();
@@ -455,6 +458,11 @@ public class SoundexGRExtra {
             }
             i++;
         }
+        
+        //for (int z=0; z<res.length;z++)
+        //	System.out.print(res[z]);
+        //System.out.println(" (after encode)");
+        
         String finalResult = ""; // Remove duplicates
         finalResult += res[0];
         for (i = 1; i < res.length; i++) {
@@ -465,7 +473,32 @@ public class SoundexGRExtra {
             }
 
         }
+        
+        //for (int z=0; z<res.length;z++)
+        //	System.out.print(res[z]);
+        //System.out.println(" (after remove duplicates)");
+        
         finalResult += "00000000"; // 4 letter length encoding
         return finalResult.substring(0, 4);
+    }
+    
+    public static void main(String[] args) {
+    	
+    	String[] examples = {
+    			"έμπειρος",  
+    			"νούς",  
+    			"ευάερος", 
+    			"δίαλλειμα", 
+    			"διάλυμα",
+    			"αυλών", 
+    			"αυγό",  
+    			"αβγό",
+    			"αυγουλάκια"
+    	};
+    	
+    	for (String word: examples) {
+    		System.out.printf("%11s -> %s \n", word, encode(word));
+    	}
+    	
     }
 }
