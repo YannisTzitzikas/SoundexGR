@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 import utils.Utilities;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+//import org.apache.commons.text.similarity.LevenshteinDistance;
 /**
  *
  * @author: Antrei Kavros (additions by Yannis Tzitzikas)
