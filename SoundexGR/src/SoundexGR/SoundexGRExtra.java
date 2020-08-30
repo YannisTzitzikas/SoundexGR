@@ -268,6 +268,117 @@ public class SoundexGRExtra {
         return new String(tmp);
     }
 
+    
+    
+    /**
+    * This methods is not used by  Soundex. 
+    * It is used only for the production of the phonetic transcription.
+    * @param word, a string to be modified, based on vowel digram combinations,
+    * that when combined, produce a different sound.E.g 'αι' => 'ε' 
+    * 
+    * @return the modified @param if applicable, or the original @param
+    * otherwise
+    */
+   private static String groupVowelsPhonetically(String word) {
+       // remove group vowels if necessary to single ones
+       char[] tmp = word.toCharArray();
+       int counter = 0;
+       for (int i = 0; i < tmp.length; i++) {
+           switch (tmp[i]) {
+               case 'ό':
+                   tmp[i] = 'ο';
+                   break;
+               case 'ο':
+                   if (i + 1 < tmp.length) {
+                       if (tmp[i + 1] == 'ι') {
+                           tmp[i] = 'ι';
+                           tmp[i + 1] = ' ';
+                       }
+                       if (tmp[i + 1] == 'ί') {
+                           tmp[i] = 'ι';
+                           tmp[i + 1] = ' ';
+                       }
+                       if (tmp[i + 1] == 'υ') {
+                           tmp[i] = 'u';                  // this is the difference with the SoundexGR
+                           tmp[i + 1] = ' ';
+                       }
+                       if (tmp[i + 1] == 'ύ') {
+                           tmp[i] = 'u';				// this is the difference with the SoundexGR
+                           tmp[i + 1] = ' ';
+                       }
+                       
+                   } else {
+                       tmp[i] = 'ο';
+                   }
+                   break;
+               case 'έ':
+                   tmp[i] = 'ε';
+                   break;
+               case 'ε':
+                   if (i + 1 < tmp.length) {
+                       if (tmp[i + 1] == 'ι') {
+                           tmp[i] = 'ι';
+                           tmp[i + 1] = ' ';
+                       }
+                       if (tmp[i + 1] == 'ί') {
+                           tmp[i] = 'ι';
+                           tmp[i + 1] = ' ';
+                       }
+                   } else {
+                       tmp[i] = 'ε';
+                   }
+                   break;
+               case 'ά':
+                   tmp[i] = 'α';
+                   break;
+               case 'α':
+                   if (i + 1 < tmp.length) {
+                       if (tmp[i + 1] == 'ι') {
+                           tmp[i] = 'ε';
+                           tmp[i + 1] = ' ';
+                       }
+                       if (tmp[i + 1] == 'ί') {
+                           tmp[i] = 'ε';
+                           tmp[i + 1] = ' ';
+                       }
+                   } else {
+                       tmp[i] = 'α';
+                   }
+                   break;
+               case 'ί':
+               case 'ή':
+               case 'ύ':
+               case 'ι':
+               case 'η':
+               case 'υ':
+               case 'ϋ':
+               case 'ΰ':
+               case 'ϊ':
+               case 'ΐ':
+                   tmp[i] = 'ι';
+                   break;
+               case 'ώ':
+                   tmp[i] = 'ο';
+                   break;
+               case 'ω':
+                   tmp[i] = 'ο';
+                   break;
+           }
+       }
+
+       for (int i = 0; i < tmp.length; i++) {
+
+           if (tmp[i] == ' ') {
+               if (i + 1 < tmp.length) {
+                   tmp[i] = tmp[i + 1];
+                   tmp[i + 1] = ' ';
+                   counter++;
+               }
+           }
+       }
+       return new String(tmp);
+   }
+
     /**
      *
      * @param word, a string from which the intonation is to be removed.
@@ -482,9 +593,90 @@ public class SoundexGRExtra {
         return finalResult.substring(0, 4);
     }
     
+
+    
+    
+    /**
+    * It is a variation of the SoundexGR for returning a kind of phonetic transcription of the entire word
+    * @param word, word to be encode 
+    * @return phonetic transcription of the word
+    */
+   public static String phoneticTrascription(String word) {
+       word = word.toLowerCase(); // word to lowercase
+       word = unwrapConsonantBigrams(word); // αφαίρεση δίφθογγων - dual letter substitution to single
+       //System.out.println(word + " (after unwrapConsonantBigrams)");
+       word = getVowelAsConsonant(word); // μετατροπή ευ, αυ σε σύμφωνο , αν ακολουθεί κάποιο άηχο ή ηχηρό γράμμα - substitution of υ vowel to consonant if needed
+       //System.out.println(" " + word  + " (after getVoelsAsConsonants)");
+       // removeLast and removeLastStrict or almost useless, now that the word is trimmed to just 6 digits
+       //word = removeLastStrict(word);  // αφαίρεση του suffix της λέξης - suffix removal
+       //System.out.println(" " + word  + " (after getLastStrict)");
+       //word = groupVowels(word); // μετατροπή φωνήεντων πχ αι σε ε - substitute group vowels to single vowel.
+       word = groupVowelsPhonetically(word); // NEW
+       //System.out.println(" " + word  + " (after groupVowels)");
+       //word = removeIntonation(word);
+       //System.out.println(" " + word + " (after removeIntonation)");
+       
+       word = String.join("", word.split(" "));
+     
+       char[] givenWord = word.toCharArray();
+       char[] res = new char[givenWord.length];
+
+       int i = 0;
+       givenWord = word.substring(i).toCharArray();
+       
+       for (char c : givenWord) {
+           switch (c) {
+           	   case  'b': res[i]='b'; break;
+               case  'd': res[i]='d'; break;
+               case  'c': res[i]='c'; break;
+               case  'g': res[i]='g'; break;
+               case  'u':   res[i]='u'; break; // difference with soundexGR (for capturing U)
+           	   //---------------
+  
+           	   case 'α':   res[i]='a'; break;
+               case 'β':   res[i]='β'; break;
+               case 'γ':   res[i]='γ'; break;
+               case 'δ':   res[i]='δ'; break;
+               case 'ε':   res[i]='ε'; break;
+               case 'ζ':   res[i]='ζ'; break;
+               case 'η':   res[i]='ι'; break;
+               case 'θ':   res[i]='θ'; break;
+               case 'ι':   res[i]='ι'; break;
+               case 'κ':   res[i]='κ'; break;
+               case 'λ':   res[i]='λ'; break;
+               case 'μ':   res[i]='μ'; break;
+               case 'ν':   res[i]='v'; break;
+               case 'ξ':   res[i]='ξ'; break;
+               case 'ο':   res[i]='ο'; break;
+               case 'π':   res[i]='π'; break;
+               case 'ρ':   res[i]='ρ'; break;
+               case 'σ':   res[i]='σ'; break;
+               case 'ς':   res[i]='σ'; break;
+               case 'τ':   res[i]='τ'; break;
+               case 'υ':   res[i]='U'; break;
+               case 'φ':   res[i]='φ'; break;
+               case 'χ':   res[i]='χ'; break;
+               case 'ψ':   res[i]='ψ'; break;
+               case 'ω':   res[i]='ο'; break;
+             
+               default:
+                   res[i] = '0';
+                   break;
+           }
+           i++;
+       }
+       return new String(res);
+   }
+
+    
+    
+    
     public static void main(String[] args) {
     	
     	String[] examples = {
+    			"ουουου",
+    			"μπουμπούκι",
+    			"ούλα",
     			"έμπειρος",  
     			"νούς",  
     			"ευάερος", 
@@ -493,11 +685,19 @@ public class SoundexGRExtra {
     			"αυλών", 
     			"αυγό",  
     			"αβγό",
-    			"αυγουλάκια"
+    			"αυγουλάκια",
+    			"τζατζίκι",
+    			"τσιγκούνης",
+    			"τσιγγούνης",
+    			"εύδοξος",
+    			"Γιάννης",
+    			"Γιάνης",
+    			"Μοίνοιματα"
     	};
     	
+    	//System.out.printf("%11s -> %s %s \n", "Word" , "SoundexGR" , "Phonetic Transcription");
     	for (String word: examples) {
-    		System.out.printf("%11s -> %s \n", word, encode(word));
+    		System.out.printf("%11s -> %s %s \n", word, encode(word), phoneticTrascription(word));
     	}
     	
     }
