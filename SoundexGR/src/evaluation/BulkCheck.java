@@ -41,9 +41,7 @@ public class BulkCheck {
                 counter++;
             }
         }
-
         return res.size() == 0 ? 0 : counter / (float) res.size();
-
     }
 
     /**
@@ -60,7 +58,6 @@ public class BulkCheck {
                 counter++;
             }
         }
-
         return counter / (float) exp.size();
     }
 
@@ -108,6 +105,7 @@ public class BulkCheck {
     }
 
     /** 
+     * (OLD VERSION - NOT IN USE)
      * Performs the experiments:  Comparative Evaluation of various Soundex-like algorithms
      * (the old one)
      */
@@ -154,7 +152,7 @@ public class BulkCheck {
             System.out.println("------Deletions End------\n\n");
             utils.clear();
             
-            System.out.println("-------Same-------");
+            System.out.println("-------Same Sounded-----");
             utils.readFile("Resources/names/same_sounded.txt");
             System.out.println("-Soundex");
             bulkCheckRun.check(utils, "Resources/names/same_sounded.txt", "soundex", "Resources/names/soundex/sames.txt");
@@ -190,7 +188,7 @@ public class BulkCheck {
         	"Resources/names/same_sounded.txt" 		// same sounded
         };  // evaluation collections
         
-        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex" };  // Also: stemcase
+        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex", "fullPhonetic" };  // Also: stemcase
         String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writting
 
         try {
