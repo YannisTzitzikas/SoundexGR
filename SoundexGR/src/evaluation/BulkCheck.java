@@ -65,7 +65,7 @@ public class BulkCheck {
      * 
      * @param utils
      * @param path  the file with the eval collection
-     * @param type  the soundex algorith to be applied
+     * @param type  the matching (soundex) algorith to be applied
      * @param fileToWrite  the file to write (currently it just creates the file, it does not store anything there)
      * @throws FileNotFoundException
      * @throws IOException
@@ -109,7 +109,7 @@ public class BulkCheck {
      * Performs the experiments:  Comparative Evaluation of various Soundex-like algorithms
      * (the old one)
      */
-    public static void performExperiments() {
+    public static void performExperimentsOLDVERSION() {
     	Utilities utils = new Utilities();
         BulkCheck bulkCheckRun = new BulkCheck();
 
@@ -188,7 +188,8 @@ public class BulkCheck {
         	"Resources/names/same_sounded.txt" 		// same sounded
         };  // evaluation collections
         
-        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex", "fullPhonetic" };  // Also: stemcase
+        String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex", "fullPhonetic" };  // all supported options
+        //String OptionsToEvaluate[] 	= { "soundex"};  
         String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writting
 
         try {
