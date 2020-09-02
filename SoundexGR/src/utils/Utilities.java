@@ -165,7 +165,14 @@ public class Utilities {
                     res.add(word); //add the word before stemming (for computing correctly the metrics)
                 }
             }
+        }   else if (type.compareTo("fullPhonetic") == 0) {  // full phonetic 
+        	for (String word : names) {               
+                if (SoundexGRExtra.phoneticTrascription(word).compareTo(SoundexGRExtra.phoneticTrascription(query)) == 0) {
+                    res.add(word);
+                }
+        	} 
         }
+       
         return res;
     }
 
