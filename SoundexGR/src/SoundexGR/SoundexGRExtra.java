@@ -1,7 +1,7 @@
 package SoundexGR;
 
 /**
- * @author: Antrei Kavros
+ * @author: Antrei Kavros and Yannis Tzitzikas
  */
 
 
@@ -477,6 +477,31 @@ public class SoundexGRExtra {
         return word;
     }
 
+    
+    /**
+    * 
+    * Version for the exact phonetic transcription
+    * @param word, a string to be modified if it contains specific consonant
+    * digram combinations
+    * @return the modified string
+    */
+   private static String unwrapConsonantBigramsPhonetically(String word) {
+       // Reason for example of μπ -> b and not -> β , is that vowels as consonant operation follows and may 
+       // wrongly change to a consonant
+       word = word.replace("μπ", "b");
+       word = word.replace("ντ", "d");
+       word = word.replace("γκ", "g");
+       word = word.replace("γγ", "g");
+       word = word.replace("τσ", "ts"); // different than plain (in soundex: c)
+       word = word.replace("τζ", "dz"); // different than plain (in soundex: c)
+       word = word.replace("πς", "ψ");
+       word = word.replace("πσ", "ψ");
+       word = word.replace("κς", "ξ");
+       word = word.replace("κσ", "ξ");
+
+       return word;
+   }
+
     /**
      *
      * @param word, word to be encode through this Soundex implementation
@@ -484,6 +509,7 @@ public class SoundexGRExtra {
      */
     public static String encode(String word) {
 
+    	final int LengthEncoding = 4; // the length of the code to be produced (default = 4)
     	
 	    //The following function calls could be merged together in to one loop for better performance
         word = word.toLowerCase(); // word to lowercase
@@ -589,8 +615,9 @@ public class SoundexGRExtra {
         //	System.out.print(res[z]);
         //System.out.println(" (after remove duplicates)");
         
-        finalResult += "00000000"; // 4 letter length encoding
-        return finalResult.substring(0, 4);
+        finalResult += "00000000"; 
+        //finalResult += "00000000000000000000"; // needed only in the case the lenth of the code is big
+        return finalResult.substring(0, LengthEncoding); // 4 letter length encoding
     }
     
 
@@ -603,8 +630,9 @@ public class SoundexGRExtra {
     */
    public static String phoneticTrascription(String word) {
        word = word.toLowerCase(); // word to lowercase
-       word = unwrapConsonantBigrams(word); // αφαίρεση δίφθογγων - dual letter substitution to single
-       //System.out.println(word + " (after unwrapConsonantBigrams)");
+       //word = unwrapConsonantBigrams(word); // αφαίρεση δίφθογγων - dual letter substitution to single
+       word = unwrapConsonantBigramsPhonetically(word); // NEW 
+      //System.out.println(word + " (after unwrapConsonantBigrams Phonetically)");
        word = getVowelAsConsonant(word); // μετατροπή ευ, αυ σε σύμφωνο , αν ακολουθεί κάποιο άηχο ή ηχηρό γράμμα - substitution of υ vowel to consonant if needed
        //System.out.println(" " + word  + " (after getVoelsAsConsonants)");
        // removeLast and removeLastStrict or almost useless, now that the word is trimmed to just 6 digits
@@ -612,7 +640,7 @@ public class SoundexGRExtra {
        //System.out.println(" " + word  + " (after getLastStrict)");
        //word = groupVowels(word); // μετατροπή φωνήεντων πχ αι σε ε - substitute group vowels to single vowel.
        word = groupVowelsPhonetically(word); // NEW
-       //System.out.println(" " + word  + " (after groupVowels)");
+      //System.out.println(" " + word  + " (after groupVowels phonetically)");
        //word = removeIntonation(word);
        //System.out.println(" " + word + " (after removeIntonation)");
        
@@ -630,29 +658,29 @@ public class SoundexGRExtra {
                case  'd': res[i]='d'; break;
                case  'c': res[i]='c'; break;
                case  'g': res[i]='g'; break;
-               case  'u':   res[i]='u'; break; // difference with soundexGR (for capturing U)
+               case  'u':   res[i]='u'; break; // different with soundexGR (for capturing U)
            	   //---------------
   
            	   case 'α':   res[i]='a'; break;
-               case 'β':   res[i]='β'; break;
+               case 'β':   res[i]='v'; break; // different
                case 'γ':   res[i]='γ'; break;
                case 'δ':   res[i]='δ'; break;
-               case 'ε':   res[i]='ε'; break;
+               case 'ε':   res[i]='e'; break; // different
                case 'ζ':   res[i]='ζ'; break;
-               case 'η':   res[i]='ι'; break;
+               case 'η':   res[i]='i'; break; // different
                case 'θ':   res[i]='θ'; break;
-               case 'ι':   res[i]='ι'; break;
-               case 'κ':   res[i]='κ'; break;
-               case 'λ':   res[i]='λ'; break;
-               case 'μ':   res[i]='μ'; break;
-               case 'ν':   res[i]='v'; break;
-               case 'ξ':   res[i]='ξ'; break;
+               case 'ι':   res[i]='i'; break;
+               case 'κ':   res[i]='k'; break; // different
+               case 'λ':   res[i]='l'; break; // different
+               case 'μ':   res[i]='m'; break; // different
+               case 'ν':   res[i]='n'; break; // different
+               case 'ξ':   res[i]='ξ'; break; 
                case 'ο':   res[i]='ο'; break;
-               case 'π':   res[i]='π'; break;
-               case 'ρ':   res[i]='ρ'; break;
-               case 'σ':   res[i]='σ'; break;
-               case 'ς':   res[i]='σ'; break;
-               case 'τ':   res[i]='τ'; break;
+               case 'π':   res[i]='p'; break; // different
+               case 'ρ':   res[i]='r'; break; // different
+               case 'σ':   res[i]='s'; break; // different
+               case 'ς':   res[i]='s'; break; // different
+               case 'τ':   res[i]='t'; break; // different
                case 'υ':   res[i]='U'; break;
                case 'φ':   res[i]='φ'; break;
                case 'χ':   res[i]='χ'; break;
@@ -660,7 +688,8 @@ public class SoundexGRExtra {
                case 'ω':   res[i]='ο'; break;
              
                default:
-                   res[i] = '0';
+                   //res[i] = '0';
+                   res[i] = c; // NEW
                    break;
            }
            i++;
@@ -674,6 +703,10 @@ public class SoundexGRExtra {
     public static void main(String[] args) {
     	
     	String[] examples = {
+    			"αυγό",  
+    			"αβγό",
+    			"εύδοξος",
+    			"έβδοξος",
     			"ουουου",
     			"μπουμπούκι",
     			"ούλα",
@@ -682,9 +715,7 @@ public class SoundexGRExtra {
     			"ευάερος", 
     			"δίαλλειμα", 
     			"διάλυμα",
-    			"αυλών", 
-    			"αυγό",  
-    			"αβγό",
+    			"αυλών", 			
     			"αυγουλάκια",
     			"τζατζίκι",
     			"τσιγκούνης",
@@ -692,7 +723,8 @@ public class SoundexGRExtra {
     			"εύδοξος",
     			"Γιάννης",
     			"Γιάνης",
-    			"Μοίνοιματα"
+    			"Μοίνοιματα",
+    			"προύχοντας"
     	};
     	
     	//System.out.printf("%11s -> %s %s \n", "Word" , "SoundexGR" , "Phonetic Transcription");
