@@ -18,7 +18,7 @@ public class SoundexGRExtra {
             case 'γ':
             case 'β':
             case 'δ':
-            case 'α':
+            case 'α': // χρειάζεται;
             case 'λ':
             case 'μ':
             case 'ν':
