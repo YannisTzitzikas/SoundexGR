@@ -24,8 +24,8 @@ import utils.Utilities;
  */
  
 public class BulkCheck {
-    ArrayList<Integer> score = new ArrayList<>();
-    int correct = 0, total = 0;
+    //ArrayList<Integer> score = new ArrayList<>(); // comment by ytz 2021-02-26
+    //int correct = 0, total = 0;
 
     /**
      * It takes as input a response (res) and the set of correct answers (exp)
@@ -62,7 +62,7 @@ public class BulkCheck {
     }
 
     /**
-     * 
+     * It computes precision/recall/f-measure
      * @param utils
      * @param path  the file with the eval collection
      * @param type  the matching (soundex) algorith to be applied
@@ -216,6 +216,51 @@ public class BulkCheck {
 
     
     /** 
+     * ONGOING
+     * For different sizes of *collections*
+     */
+    public static void performExperimentsOverDifferentSizes() {
+    	Utilities utils = new Utilities();
+        BulkCheck bulkCheckRun = new BulkCheck();
+        
+        System.out.println("EVALUTION OVER DIFFERENT SIZES (ONGOING)");
+        
+        String DatasetFiles[]		= {
+        	//"Resources/names/additions.txt", 		// additions
+        	//"Resources/names/subs.txt", 			// subtitutions
+        	//"Resources/names/deletions.txt", 		// deletions			
+        	//"Resources/names/same_sounded.txt" 		// same sounded
+        	"Resources/names/newCollection.txt" 		// ONGOING  		
+        };  // evaluation collections
+        
+        //String OptionsToEvaluate[] 	= { "soundex", "original", "combine", "stemAndsoundex", "fullPhonetic" };  // all supported options
+        String OptionsToEvaluate[] 	= { "soundex"};  
+        String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writing
+
+        try {
+            for (String datasetFile: DatasetFiles) { // for each dataset file
+            	utils.readFile(datasetFile); // reads the dataset file
+            	System.out.println("["+datasetFile+"]");
+            	for (String optionToEvaluate: OptionsToEvaluate ) { // for each code generation option
+            		System.out.println("\tResults of testing over " + datasetFile + " the option *" + optionToEvaluate + "*:");
+            		
+            		String outputFileName = 
+            				outputFilePrefix + "/output-" +
+            				datasetFile.substring(datasetFile.lastIndexOf('/')+1); // the prefix + the last part of the dataset filename
+            		
+            		//System.out.println(">>>>>"+outputFileName);
+            		bulkCheckRun.check(utils, datasetFile, optionToEvaluate, outputFileName);
+            		System.out.println("-------------------------------------------------");
+            	}
+            	utils.clear();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(BulkCheck.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
+    /** 
      * Comparing the performance of Stemming
      */
     public static void performExperimentsWithStemmer() {
@@ -251,8 +296,9 @@ public class BulkCheck {
     }
 
     public static void main(String[] args) {
-    	//performExperiments(); // the original experiments
-    	performExperimentsNew(); // the refactored code for the experiments Yannis Tzitzikas
+    	//performExperiments(); // the original experiments (old version of code)
+    	//performExperimentsNew(); // the refactored code for the experiments Yannis Tzitzikas
     	//performExperimentsWithStemmer();  // evaluation of a Greek stemmer
+    	performExperimentsOverDifferentSizes() ;
         }
 }
