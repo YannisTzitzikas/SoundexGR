@@ -25,15 +25,15 @@ import java.util.TreeMap;
 
 public class Utilities {
 
-    LinkedHashSet<String> names = new LinkedHashSet<>();  //  a set of names
-    LinkedHashSet<String> errNames = new LinkedHashSet<>();
-    TreeMap<String, String> wcPair = new TreeMap<>();
-    TreeMap<String, String> cwPair = new TreeMap<>();
+    LinkedHashSet<String> names = new LinkedHashSet<>();  //  a set of names (read by the file)
+    LinkedHashSet<String> errNames = new LinkedHashSet<>(); // the error names to be produced and written in a file
+    TreeMap<String, String> wcPair = new TreeMap<>(); //WrongCorrect pair
+    TreeMap<String, String> cwPair = new TreeMap<>(); //CorrectWrong pair
 
     SecureRandom rand = new SecureRandom();
 
     /**
-     * reads the filename and fills the hashset names
+     * reads the filename and fills the hashset "names"
      * @param path
      * @throws FileNotFoundException
      * @throws IOException
@@ -112,7 +112,8 @@ public class Utilities {
     /**
      * It takes as input a query word and the phonetic alg to be used
      * and returns the words that have the same code
-     * It pre-suposes "names" which is ..
+     * It pre-supposes "names" which is the set of names to be checked
+     * (those by reading the file)
      * @param query the query code
      * @param type the algorithm to be used (soundex, original, combine)
      * @return an arraylist of strings
