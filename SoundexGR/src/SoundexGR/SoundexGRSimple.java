@@ -5,6 +5,8 @@ package SoundexGR;
  */
 
 public class SoundexGRSimple {
+	
+	public static int LengthEncoding = 4; // the length of the code to be produced (default = 4)
 
     public static String encode(String word) {
         word = word.toLowerCase();
@@ -73,7 +75,46 @@ public class SoundexGRSimple {
             }
 
         }
-        finalResult += "00000000";
-        return finalResult.substring(0, 4);
+        //finalResult += "00000000";
+        finalResult += "00000000000000000000000";
+        
+        return finalResult.substring(0, LengthEncoding);
     }
+    
+    
+public static void main(String[] args) {
+    	
+    	String[] examples = {
+    			"αυγό",  
+    			"αβγό",
+    			"εύδοξος",
+    			"έβδοξος",
+    			"ουουου",
+    			"μπουμπούκι",
+    			"ούλα",
+    			"έμπειρος",  
+    			"νούς",  
+    			"ευάερος", 
+    			"δίαλλειμα", 
+    			"διάλυμα",
+    			"αυλών", 			
+    			"αυγουλάκια",
+    			"τζατζίκι",
+    			"τσιγκούνης",
+    			"τσιγγούνης",
+    			"εύδοξος",
+    			"Γιάννης",
+    			"Γιάνης",
+    			"Μοίνοιματα",
+    			"προύχοντας"
+    	};
+    	
+    	//System.out.printf("%11s -> %s %s \n", "Word" , "SoundexGR" , "Phonetic Transcription");
+    	LengthEncoding =4;
+    	for (String word: examples) {
+    		System.out.printf("%11s -> %s  \n", word, encode(word));
+    	}
+    	
+    }
+    
 }

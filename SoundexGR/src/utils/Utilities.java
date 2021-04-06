@@ -2,8 +2,6 @@
  * @author: Antrei Kavros (refactoring and additions by Yannis Tzitzikas)
  */
 
-
-
 package utils;
 
 import java.io.BufferedReader;
@@ -38,6 +36,7 @@ public class Utilities {
      * @throws FileNotFoundException
      * @throws IOException
      */
+        
     public void readFile(String path) throws FileNotFoundException, IOException {
     	    	
         FileReader fl = new FileReader(path);
@@ -50,6 +49,34 @@ public class Utilities {
             }
         }
     }
+    
+        
+    /**
+     * reads the filename (the first maxWordNum words) and fills the hashset "names" 
+     * @param path
+     * @param  maxWordNum  the max number of words to be read
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+
+    
+    public void readFile(String path, int maxWordNum) throws FileNotFoundException, IOException {
+    	int wordsRead=0;	
+        FileReader fl = new FileReader(path);
+        BufferedReader bfr = new BufferedReader(fl);
+        String line;
+        while ((line = bfr.readLine()) != null) {
+            String[] tmp = line.split(",");
+            for (String word : tmp) {
+            	if (wordsRead<maxWordNum) {
+            		names.add(word.trim());
+            		wordsRead++;
+            	}
+            }
+        }
+        //System.out.println(">>readFile read "+wordsRead+" words, specifically: "+names);
+    }
+    
 
     /**
      * clears the names

@@ -6,6 +6,9 @@ package SoundexGR;
 
 
 public class SoundexGRExtra {
+	
+	public static int LengthEncoding = 4; // the length of the code to be produced (default = 4)
+	
     /**
      * @param c, the character to be checked, if is in the "strong" (ηχηρά)
      * category of Greek Letters
@@ -509,7 +512,7 @@ public class SoundexGRExtra {
      */
     public static String encode(String word) {
 
-    	final int LengthEncoding = 4; // the length of the code to be produced (default = 4)
+    	
     	
 	    //The following function calls could be merged together in to one loop for better performance
         word = word.toLowerCase(); // word to lowercase
@@ -615,8 +618,8 @@ public class SoundexGRExtra {
         //	System.out.print(res[z]);
         //System.out.println(" (after remove duplicates)");
         
-        finalResult += "00000000"; 
-        //finalResult += "00000000000000000000"; // needed only in the case the lenth of the code is big
+        //finalResult += "00000000"; 
+        finalResult += "00000000000000000000"; // needed only in the case the lenth of the code is big
         return finalResult.substring(0, LengthEncoding); // 4 letter length encoding
     }
     
@@ -728,6 +731,7 @@ public class SoundexGRExtra {
     	};
     	
     	//System.out.printf("%11s -> %s %s \n", "Word" , "SoundexGR" , "Phonetic Transcription");
+    	LengthEncoding =4;
     	for (String word: examples) {
     		System.out.printf("%11s -> %s %s \n", word, encode(word), phoneticTrascription(word));
     	}
