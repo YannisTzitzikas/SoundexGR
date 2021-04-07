@@ -148,14 +148,21 @@ public class Utilities {
 
     public ArrayList<String> search(String query, String type) {
         ArrayList<String> res = new ArrayList<>();
-               
-
-        if (type.compareTo("soundex") == 0) {
+              
+        
+        
+        if (type.compareTo("exactMatch") == 0) {
+            for (String word : names) {               
+                if (word.compareTo(query) == 0) {
+                    res.add(word);
+                }
+            }
+        }
+        else if (type.compareTo("soundex") == 0) {
             for (String word : names) {               
                 if (SoundexGRExtra.encode(word).compareTo(SoundexGRExtra.encode(query)) == 0) {
                     res.add(word);
                 }
-
             }
         } else if (type.compareTo("original") == 0) {
             for (String word : names) {
