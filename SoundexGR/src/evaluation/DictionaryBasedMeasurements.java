@@ -188,7 +188,7 @@ public class DictionaryBasedMeasurements {
 	 */
 	public static void createEvaluationDataset( String path,  String outputPath)
 	{
-	    int STEP=1; // to pick rows every STEP   (400 done, 200 done)
+	    int STEP=100000; // to pick rows every STEP   (400 done, 200 done)
 		
 		String line;
 	    int counter=0; 				// for checking the step
