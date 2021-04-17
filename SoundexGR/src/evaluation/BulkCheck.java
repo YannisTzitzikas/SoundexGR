@@ -83,7 +83,7 @@ public class BulkCheck {
         BufferedReader bfr = new BufferedReader(fl);
         String line;
 
-        FileWriter fr = new FileWriter(fileToWrite); // opens the file to write  (currently does not write anything)
+        //FileWriter fr = new FileWriter(fileToWrite); // opens the file to write  (currently does not write anything)
         float total_pre = 0; // initialization of total precision
         float total_rec = 0; // initialization of total recall
         int counter = 0; // counts the number of buckets (i.e. the number of lines in the file)
@@ -129,7 +129,7 @@ public class BulkCheck {
         float avgRecall = total_rec / counter; 		// computing the avg recall
         float avgFmeasure = 2 * (total_pre / counter) * (total_rec / counter) / ((total_pre / counter) + (total_rec / counter));
         
-        if (SoundexGRExtra.LengthEncoding!=SoundexGRSimple.LengthEncoding) { // the config is not correct for experiments
+        if (SoundexGRExtra.LengthEncoding!=SoundexGRSimple.LengthEncoding) { // if the config is not correct for experiments
         	throw new RuntimeException("SoundexGRExtra.LengthEncoding!=SoundexGRSimple.LengthEncoding");
         }
         
@@ -145,127 +145,54 @@ public class BulkCheck {
         System.out.println("\tF-Measure        : " + avgFmeasure);
         System.out.println("\tNum of words checked: " + numOfWords);
         */
-        System.out.format("\tPre:%.3f Rec:%.3f F1:%.3f NWords:%d",avgPrecision, avgRecall,avgFmeasure,numOfWords);
+        System.out.format("NWords:%d \t Pre:%.3f Rec:%.3f F1:%.3f ",numOfWords,avgPrecision, avgRecall,avgFmeasure);
                 
-        fr.close();  // closes the output file
+        //fr.close();  // closes the output file
     }
 
-    /** 
-     * (OLD VERSION - NOT IN USE)
-     * Performs the experiments:  Comparative Evaluation of various Soundex-like algorithms
-     * (the old one)
-     */
-    public static void performExperimentsOLDVERSION() {
-    	Utilities utils = new Utilities();
-        BulkCheck bulkCheckRun = new BulkCheck();
-
-        try {
-        	/*
-        	 * Comparative Evaluation of various Soundex-like algorithms
-        	 */
-            System.out.println("------Additions------");
-            utils.readFile("Resources/names/additions.txt");
-            
-                
-            System.out.println("-Soundex");
-            bulkCheckRun.check(utils, "Resources/names/additions.txt", "soundex", "Resources/names/soundex/adds_result.txt",0);
-            System.out.println("-Original");
-            bulkCheckRun.check(utils, "Resources/names/additions.txt", "original", "Resources/names/original/adds_result.txt",0);
-            System.out.println("-Combine");
-            bulkCheckRun.check(utils, "Resources/names/additions.txt", "combine", "Resources/names/combine/adds_result.txt",0);
-            System.out.println("------Additions End------\n\n");
-            utils.clear();
-
-            System.out.println("------Substitutions------");
-            utils.readFile("Resources/names/subs.txt");
-            System.out.println("-Soundex");
-            bulkCheckRun.check(utils, "Resources/names/subs.txt", "soundex", "Resources/names/soundex/subs_result.txt",0);
-            System.out.println("-Original");
-            bulkCheckRun.check(utils, "Resources/names/subs.txt", "original", "Resources/names/original/subs_result.txt",0);
-            System.out.println("-Combine");
-            bulkCheckRun.check(utils, "Resources/names/subs.txt", "combine", "Resources/names/combine/subs_result.txt",0);
-            System.out.println("------Substitutions End------\n\n");
-            utils.clear();
-
-            System.out.println("------Deletions------");
-            utils.readFile("Resources/names/deletions.txt");
-            System.out.println("-Soundex");
-            bulkCheckRun.check(utils, "Resources/names/deletions.txt", "soundex", "Resources/names/soundex/dels_result.txt",0);
-            System.out.println("-Original");
-            bulkCheckRun.check(utils, "Resources/names/deletions.txt", "original", "Resources/names/original/dels_result.txt",0);
-            System.out.println("-Combine");
-            bulkCheckRun.check(utils, "Resources/names/deletions.txt", "combine", "Resources/names/combine/dels_result.txt",0);
-            System.out.println("------Deletions End------\n\n");
-            utils.clear();
-            
-            System.out.println("-------Same Sounded-----");
-            utils.readFile("Resources/names/same_sounded.txt");
-            System.out.println("-Soundex");
-            bulkCheckRun.check(utils, "Resources/names/same_sounded.txt", "soundex", "Resources/names/soundex/sames.txt",0);
-            System.out.println("-Original");
-            bulkCheckRun.check(utils, "Resources/names/same_sounded.txt", "original", "Resources/names/original/sames.txt",0);
-            System.out.println("-Combine");
-            bulkCheckRun.check(utils, "Resources/names/same_sounded.txt", "combine", "Resources/names/combine/sames.txt",0);
-            System.out.println("-------Same End-------\n\n");
-            utils.clear();
-            
-            
-
-        } catch (IOException ex) {
-            Logger.getLogger(BulkCheck.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    	
-    }
     
     /**
-     * 
+     * Performs experiments for various dataset sizes.
+     * The control parameters are in the body of the method
      */
     
     public static void performExperimentsForDatasetSizes() {
     	//MeasurementsWriter initialization and header
-    	mw = new MeasurementsWriter("Resources/measurements/phoneticMeasurements.csv");
+    	mw = new MeasurementsWriter("Resources/measurements/currentMeasurements.csv");
     	mw.write("# datasetName, datasetSize, codeMethod, CodeSize, Precision, Recall, FScore\n");
     	
     	// PARAMS of the experiments to run
     	// Dataset sizes
-    	int dSizeMin=200; //100
-    	int dSizeMax=2000; //3000
-    	int dSizeStep=200;  //4000
+    	int dSizeMin=10;   //100
+    	int dSizeMax=100;  //3000
+    	int dSizeStep=20;  //4000
     	
     	// Code sizes
-    	int codeSizeMin=2; //100
+    	int codeSizeMin=4; //100
     	int codeSizeMax=12; //3000
-    	
-    	
-    	for (int ds=dSizeMin; ds<=dSizeMax; ds+=dSizeStep) { // datasetsizes
-    		
+     
+    	for (int ds=dSizeMin; ds<=dSizeMax; ds+=dSizeStep) { // datasetsizes   		
     		for (int codeSize=codeSizeMin; codeSize<=codeSizeMax; codeSize++) {  // code sizes
-        		
-        		// setting the length encoding 
-        		SoundexGRExtra.LengthEncoding = codeSize;
-        		SoundexGRSimple.LengthEncoding = codeSize;
-        		
-    			performExperiments(ds);  // performs the experiments
+        		performExperiments(ds, codeSize);  // performs the experiments for size ds and code length codeSize
     		}
     	}
-    	
     	// closing the measurements file
-    	mw.close();
-    	System.out.println("COMLETION.");
+    	mw.close(); // put in comments for dictionarybased
+    	System.out.println("COMPLETION.");
     }
     
     
     /** 
-     * Refactored code: Performs all the experiments
+     * Performs all the experiments
      * @param maxWordNum  max number of words from the dataset to be considered (use 0 for no limit in the number of words to be considered)
+     * @param codeLength  the length of the codes to be used
      */
-    public static void performExperiments(int maxWordNum) {
+    public static void performExperiments(int maxWordNum, int codeLength) {
     	Utilities utils = new Utilities();
         BulkCheck bulkCheckRun = new BulkCheck();
         
         //MeasurementsWriter initialization and header
-    	if (mw==null) {
+    	if (mw==null) { // if already created
     		String filename = "Resources/measurements/currentMeasurements.csv";
     		System.out.println("Creating a new file: "+ filename);
 	        mw = new MeasurementsWriter(filename);
@@ -273,10 +200,13 @@ public class BulkCheck {
     	}	
         
         String DatasetFiles[]		= {
-        	"Resources/names/additions.txt", 		// additions
-        	"Resources/names/subs.txt", 			// subtitutions
-        	"Resources/names/deletions.txt", 		// deletions			
-        	"Resources/names/same_sounded.txt"  // same sounded
+        	"Resources/names/additions.txt", 			// additions
+        	"Resources/names/subs.txt", 				// subtitutions
+        	"Resources/names/deletions.txt", 			// deletions			
+        	"Resources/names/same_sounded.txt",  		// same sounded
+        	"Resources/names/same_soundedExtended.txt" 	// same sounded (extended)
+        	//"Resources/names/dictionaryBased.txt",       // dictionary Based (current)
+        	//"Resources/names/dictionaryBasedFull.txt",
         	//"Resources/names/newcollection.txt"  // test purposes  
         };  // evaluation collections
         
@@ -285,10 +215,23 @@ public class BulkCheck {
         		"soundex", 
         		"original", 
         		"combine", 
+        		"stemcase",
         		"stemAndsoundex", 
-        		"fullPhonetic"
-
+        		"fullPhonetic",
+        		"editDistance1",
+        		"editDistance2",
+        		"editDistance3",
+        		"editDistance4"
         };  // all supported options
+        
+        
+        //for setting the desired code length
+        SoundexGRExtra.LengthEncoding = codeLength;
+		SoundexGRSimple.LengthEncoding = codeLength;
+        System.out.println("Indicative enconding: " + SoundexGRExtra.encode("Αυγο")); // for testing purposes
+        //System.out.println(SoundexGRSimple.encode("Αυγο"));
+        
+        
         //String OptionsToEvaluate[] 	= { "soundex"};  
         String outputFilePrefix 	=  "Resources/names/results"	;   // prefixes of files for writing
 
@@ -298,10 +241,14 @@ public class BulkCheck {
             		utils.readFile(datasetFile) ;
             	else   	
             		utils.readFile(datasetFile,maxWordNum); // reads the dataset file (up to maxWordNum), 0: no limit
-            	System.out.print("["+datasetFile+"]: ");
+            	System.out.println("["+datasetFile+"]: ");
             	            	
             	for (String optionToEvaluate: OptionsToEvaluate ) { // for each code generation option
-            		System.out.println("\tTesting *" + optionToEvaluate + "* " + " codeLength=" + SoundexGRExtra.LengthEncoding +" maxwords="+maxWordNum);
+            		// System.out.print("\tTesting *" + optionToEvaluate + "* " + "\tcodeLen=" + SoundexGRExtra.LengthEncoding +" \tmaxwords="+maxWordNum +"\t:");
+            		System.out.format("\tTesting *%15s* codeLen=%d maxWords=%d ", 
+            				optionToEvaluate,  
+            				SoundexGRExtra.LengthEncoding,
+            				maxWordNum);
             		mw.write(datasetFile+","+maxWordNum+","+optionToEvaluate+","); // writing to measurement file
             		
             		String outputFileName = 
@@ -317,7 +264,7 @@ public class BulkCheck {
         } catch (IOException ex) {
             Logger.getLogger(BulkCheck.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mw.close(); // new to test
+        //mw.close(); // put in comments if you are not evaluating datasetsizes
     }
 
     
@@ -330,11 +277,21 @@ public class BulkCheck {
         BulkCheck bulkCheckRun = new BulkCheck();
         
         System.out.println("Evaluating the peformance of *stemming*");
+        
+       //MeasurementsWriter initialization and header
+    	if (mw==null) { // if not already created
+    		String filename = "Resources/measurements/currentMeasurements.csv";
+    		System.out.println("Creating a new file: "+ filename);
+	        mw = new MeasurementsWriter(filename);
+	    	mw.write("# datasetName, datasetSize, codeMethod, CodeSize, Precision, Recall, FScore\n");
+    	}	
+    	
         String DatasetFiles[]		= {
             	"Resources/names/additions.txt", 		// additions
             	"Resources/names/subs.txt", 			// subtitutions
             	"Resources/names/deletions.txt", 		// deletions			
-            	"Resources/names/same_sounded.txt" 		// same sounded
+            	"Resources/names/same_sounded.txt", 		// same sounded
+            	"Resources/names/same_soundedExtended.txt" 		// same sounded (more)
             };  // evaluation collections
         
         String OptionsToEvaluate[] 	= { "stemcase"};
@@ -358,9 +315,15 @@ public class BulkCheck {
     }
 
     public static void main(String[] args) {
+    	System.out.println("[BulkCheck]-start");
     	
-    	performExperiments(0); // the refactored code for the experiments Yannis Tzitzikas
-    	//performExperimentsWithStemmer();  // evaluation of a Greek stemmer
-    	//performExperimentsForDatasetSizes();
+    	// UNCOMMENT THE METHOD THAT YOU WANT TO RUN
+    	
+    	//performExperimentsWithStemmer();  // evaluation of a Greek stemmer   (status: ok)
+    	//performExperiments(0,4); // 1st arg. word limit, 2nd code length  (status: ok)
+    	performExperimentsForDatasetSizes(); // performs experiments for various data sizes (status:ok)
+    	
+
+    	System.out.println("[BulkCheck]-complete");
         }
 }

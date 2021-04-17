@@ -206,7 +206,40 @@ public class Utilities {
                     res.add(word);
                 }
         	} 
-        }
+        }  
+        
+        else if (type.compareTo("editDistance1") == 0) {  // editDistance 
+        	for (String word : names) { 
+        		if (EditDistance.match(word, query, 1)) {
+                    res.add(word);
+                }
+        	} 
+        }  
+        
+        else if (type.compareTo("editDistance2") == 0) {  // editDistance 
+        	for (String word : names) { 
+        		if (EditDistance.match(word, query, 2)) {
+                    res.add(word);
+                }
+        	} 
+        }  
+        
+        else if (type.compareTo("editDistance3") == 0) {  // editDistance 
+        	for (String word : names) { 
+        		if (EditDistance.match(word, query, 3)) {
+                    res.add(word);
+                }
+        	} 
+        }  
+        
+        else if (type.compareTo("editDistance4") == 0) {  // editDistance 
+        	for (String word : names) { 
+        		if (EditDistance.match(word, query, 4)) {
+                    res.add(word);
+                }
+        	} 
+        }  
+        
        
         return res;
     }

@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import SoundexGR.SoundexGRExtra;
 import mitos.stemmer.Stemmer;
@@ -21,8 +24,27 @@ import stemmerWrapper.StemmerWrapper;
 /**
  * @author Yannis Tzitzikas (yannistzitzik@gmail.com)
  *
+ * It performs measurements over a dictionary and used the dictionary for producing synthetic datasets for evaluating the performance of matching algorithms
  */
 public class DictionaryBasedMeasurements {
+	
+	// to complete:
+	static char[] vowels = {'α','ε','η','υ','ι','ο','ω',
+							'ά','έ','ή','ύ','ί','ό','ώ',
+							'ϋ'
+	};
+	/**
+	 * Checks if a char is a vowel of the Greek language
+	 * @param c
+	 * @return
+	 */
+	static  boolean isVowel(char c) {
+		for (char v:vowels) {
+			if (c==v) 
+				return true;
+		}
+		return false;
+	}
 	
 	
 	/** Prints the contents of a map String->Integer
@@ -55,7 +77,8 @@ public class DictionaryBasedMeasurements {
 	}
 	
 	/**
-	 * It performs a few measurements over a dictionary (about the distribution of codes)
+	 * It performs a few statistical measurements over a dictionary (about the distribution of codes).
+	 * It also can 
 	 * @param path  the file path of the dictionary
 	 */
 	public static void performMeasurements(String path) {
@@ -70,16 +93,14 @@ public class DictionaryBasedMeasurements {
 	        String wordEncoded=""; 
 	        
 	        int option2test = 1 ; // 1: CoundexGRExtra, 2: stemmer
-	        
-	        
+	        	        
 	        //extra for codes' analytics (it measures the number of words assigned the same code)
 	        Map<String, Integer> codesAndCounts = new HashMap<>(); // for code analytics
 	        StemmerWrapper stemmer= new StemmerWrapper (); // for the case we want to perform analogous measurements using a stemmer	        
 	        
 	        // DETAILED for INSPECTION
 	        Map<String, HashSet<String>> codesAndWords = new HashMap<>(); // for code analytics     
-	        
-	        
+	        	        
 			try {
 				FileReader fl = new FileReader(path);
 		        BufferedReader bfr = new BufferedReader(fl);	
@@ -96,7 +117,6 @@ public class DictionaryBasedMeasurements {
 		        	} else if  	(option2test==2) {
 		        		wordEncoded = stemmer.getStemOf(line); 		// for testing a stemmer
 		        	} 
-		        	
 		        	
 		        	codesCharSize+=wordEncoded.length();
 		        	
@@ -156,11 +176,297 @@ public class DictionaryBasedMeasurements {
 	        printInvertedIndex(codesAndWords,false);
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("Soundex/DictionaryBasedMeasurements.");
-		//performMeasurements("Resources/dictionaries/EN-winedt/test.dic"); // for debugging purposes
-		performMeasurements("Resources/dictionaries/EN-winedt/gr.dic");  // for measurements over the dictionary
+	
+	
+	
+	/**
+	 * Reads a dictionary and produces a file containing for each word
+	 * of the dictionary a few variations that contain various kinds of errors.
+	 * Various parameters (STEP, etc) are inside the body
+	 * @param path
+	 * @param outputPath
+	 */
+	public static void createEvaluationDataset( String path,  String outputPath)
+	{
+	    int STEP=1; // to pick rows every STEP   (400 done, 200 done)
 		
+		String line;
+	    int counter=0; 				// for checking the step
+	    int counterOutputlines=0; 	// for counting the lines written
+	    int wordsWritten=0; 		// for counting the words written
+	    try {
+			FileReader fl = new FileReader(path);
+	        BufferedReader bfr = new BufferedReader(fl);	
+	        FileWriter fo =  new FileWriter(outputPath,false); // overwrite file if it exists
+	        while ((line = bfr.readLine()) != null) {
+	        	if (counter % STEP==0) {
+		        	
+		        	fo.write(line); // write the word in its initial form
+		        	wordsWritten++;
+		        	for (String v: returnVariations(line) ) { // word variations with mistakes
+		        		fo.write(","+v);
+		        		wordsWritten++;
+		        	}
+		        	fo.write("\n");	
+		        	counterOutputlines++;
+	        	}
+	        	counter++; // counting lines read
+	        }
+	        fl.close();
+	        fo.close();
+        } catch (Exception e) {
+        	System.out.println(e);
+        }
+        System.out.println("Done. Lines read "+counter + ", lines created " + counterOutputlines + " (step = " + STEP + "), words written " + wordsWritten + ", avg words per line " + wordsWritten/(counterOutputlines+0.0));		
+	}
+	
+	
+	
+	/**
+	 * Creates and returns erroneous variations of the param word
+	 * @param word
+	 * @return
+	 * TODO
+	 * Na exw kai leseis me >1 lathi
+	 */
+	static public String[] returnVariations(String word) {
+		return returnVariationsNew(word);
+	}
+	
+	
+	static  String[] returnVariationsNew(String word) { 
+		// internal class for the rules:
+		class Rule { // internal class 
+			String type="Replacement"; // default value
+			char[] notBeforeChars=null;
+			String pattern=null;
+			String replacement=null;
+			char[] notAfterChars=null;
+			
+			Random rand = new Random(); //instance of random class
+			Rule(String type) { this.type = type;}
+			Rule(char[] notBeforeChars,String pattern, String replacement, char[] notAfterChars) {
+				this.notBeforeChars=notBeforeChars;
+				this.pattern = pattern;
+				this.replacement = replacement;
+				this.notAfterChars = notAfterChars;
+			}
+			
+			/**
+			 * TODO: Applies the rule on a word. It takes as argument a string builder for cases where we want >1 rules to be applied 
+			 * @param word
+			 * @param oword
+			 * @return
+			 */
+			
+			String apply(String word, StringBuilder oword) { // deletion of one char
+				 int wordLen = word.length();
+				 
+				 int randPos;
+				 
+				 switch (type) {
+				 case "DelRandom": // Delete one random character apart from first and last
+					 if (wordLen-2>0) {
+						 randPos =	rand.nextInt(wordLen-2); 	// random num in  0.. wordLen-2
+						 oword.delete(1+randPos, 1+randPos+1); 		// deletion of one char
+						 return oword.toString();
+					 } else 
+						 return null;
+					 //break;
+				 case "RepeatOne": //Replace one random character with the next character (apart from first): usually in typing
+					 if (wordLen-2>0) {
+						 randPos =	rand.nextInt(wordLen-2); 	// random num in  0.. wordLen-1
+						 oword.setCharAt(1+randPos, word.charAt(1+randPos+1));
+						return oword.toString();
+					 } else return null;
+					 //break;
+				 case "Swap":  //Swap two consecutive middle letters (at a random place) if they are different
+					 if (wordLen-2>0) {
+					 		randPos =	rand.nextInt(wordLen-2); 	// random num in  0.. wordLen-2
+							char tmp = word.charAt(1+randPos);
+							if (tmp!=word.charAt(1+randPos+1)) { // they are different letters
+								oword.setCharAt(1+randPos, word.charAt(1+randPos+1)); 		
+								oword.setCharAt(1+randPos+1, tmp); 		
+								return oword.toString();
+							}	
+					 } else return null;
+					 break;
+				 case "DeleteSame": //If it contains two consequent same letters delete one 
+					 for (int i=0;i<wordLen-1;i++) {
+							if (word.charAt(i)==word.charAt(i+1)) {
+								oword.delete(i, i+1); 		// deletion of one char
+								return  oword.toString(); //addition of the word to the array
+							}
+						}
+					 break;
+				 case "DoubleConsonant": // It doubles a consonant in the middle
+					 //lala
+					 for (int i=1;i<wordLen-1;i++) {
+							if (!isVowel(word.charAt(i))) { // if consonant
+								oword.insert(i, word.charAt(i));	//doubles it
+								return  oword.toString(); //addition of the word to the array
+							}
+						}
+					 break;
+				 default:  // a general replacement rule 
+					 int 	 pos=-1;
+					 if ((pos=word.indexOf(pattern))!=-1) { // if it contains the pattern
+						 boolean okBefore = true;
+						 if (notBeforeChars!=null) { // if there is a restriction on the previous chars
+							 for (char c:notBeforeChars) {
+								 if ((pos>0) && (c==word.charAt(pos-1))) {
+									 okBefore = false;
+								 }
+							 }
+						 }
+						 boolean okAfter = true;
+						 if (notAfterChars!=null) { // if there is a restriction on the next chars
+							 for (char c:notAfterChars) {
+								 if ((pos<wordLen-1) && (c==word.charAt(pos+1))) {
+									 okAfter = false;
+								 }
+							 }
+						 }
+						 
+						if (okBefore && okAfter) {
+								 oword.delete(pos, pos+pattern.length()); 	// deletion 
+								 oword.insert(pos, replacement);			// insertion
+						}
+						return (okBefore && okAfter) ? oword.toString(): null; 
+						} // if contains the pattern
+				 } // switch
+				 return null;
+			 } // apply
+		} // end of inner class
+		
+	
+		// A. INITIALIZATION
+		int 	 K = 100; // max number of word variations to create
+		String[] retStrings = new String[K]; //  will hold the variations
+		int variationCounter=0;
+		
+		// B. RULES CREATION
+		Rule[] rules =  {
+				// Orthographic-i
+				new Rule(null,"η","υ",null),
+				new Rule(null,"ή","ύ",null),
+				new Rule(new char[]{'ο','α','ε'},"υ","η",null), // checked  
+				new Rule(new char[]{'ο','α','ε'},"ύ","ή",null), // checked
+				new Rule(null,"η","ει",null),
+				new Rule(null,"η","οι",null),
+				new Rule(new char[]{'ο','α','ε'},"ι","υ",null), //checked
+				new Rule(new char[]{'ο','α','ε'},"ί","ύ",null), //checked
+				new Rule(new char[]{'ο','α','ε'},"ι","η",null), //checked
+				new Rule(new char[]{'ο','α','ε'},"ί","ή",null), //checked
+				
+				// ι->οι, ι->ει, ί->οι, ί->ει, 
+				new Rule(new char[]{'ο','α','ε'},"ι","ει",null), 
+				new Rule(new char[]{'ο','α','ε'},"ί","εί",null), 
+				new Rule(new char[]{'ο','α','ε'},"ι","οι",null), 
+				new Rule(new char[]{'ο','α','ε'},"ί","οί",null), 
+				
+				new Rule(null,"οι","ει",null),
+				new Rule(null,"οί","εί",null),
+				new Rule(null,"ει","οι",null),
+				new Rule(null,"εί","οί",null),
+				// Orthographic-e
+				new Rule(null,"ε","αι",new char[]{'ι','ί'}),
+				new Rule(null,"έ","αί",new char[]{'ι','ί'}),
+				new Rule(null,"αι","ε",null),
+				new Rule(null,"αί","έ",null),				
+				// Orthographic-au,eu
+				new Rule(null,"αυ","αφ",null),
+				new Rule(null,"αυ","αβ",null),
+				new Rule(null,"αφ","αυ",null),
+				new Rule(null,"αβ","αυ",null),
+				new Rule(null,"ευ","εβ",null),
+				new Rule(null,"εύ","έβ",null),
+				new Rule(null,"εβ","ευ",null),
+				new Rule(null,"έβ","εύ",null),
+				new Rule(null,"ευ","εφ",null),
+				new Rule(null,"εύ","έφ",null),
+				new Rule(null,"εφ","ευ",null),
+				new Rule(null,"έφ","εύ",null),
+				// Orthographic-g
+				new Rule(null,"γκ","γγ",null),
+				new Rule(null,"γγ","γκ",null),
+				// Orthographic-o
+				new Rule(null,"ο","ω",new char[]{'υ','ύ','ι','ί'}), //checked
+				new Rule(null,"ό","ώ",new char[]{'υ','ύ','ι','ί'}), //checked
+				new Rule(null,"ω","ο",null),
+				new Rule(null,"ώ","ό",null),
+				// Orthographic-ks
+				new Rule(null,"ξ","κσ",null),
+				new Rule(null,"ψ","πσ",null),
+				
+				
+				/*
+				// Rules for Typing Problems (currently inactive)
+				new Rule("DelRandom"), 			// Deletion of random letter in the middle
+				new Rule("RepeatOne"), 			// Repetition of one character: overwrites the next
+				new Rule("Swap"), 				// Swapping of two consecutive chars
+				*/
+				new Rule("DeleteSame"), 		// Delete two consecutive same chars
+				//new Rule("DoubleConsonant")		// Doubles a consonant in the middle
+		};
+		
+		
+		// C. APPLICATION OF SINGLE MISTAKE RULES
+		/*
+		for (Rule rcur: rules) {
+			StringBuilder oword = new StringBuilder(word); // new builder for each rule
+			retStrings[variationCounter++]= rcur.apply(word, oword);  // storing the result of applying  the rule
+		}
+		*/
+		
+		//D. APPLICATION OF MANY RULES: MAX (ONGOING) + 1 error rule
+		StringBuilder oword = new StringBuilder(word); // new builder for each rule
+		for (Rule rcur: rules) {
+			retStrings[variationCounter++]= rcur.apply(word, oword);  // storing the result of applying  the rule
+			if (word!=null)  // updating the current word (for applying the next typo on that
+				word=oword.toString();
+		}
+		Rule rRepeat =	new Rule("DoubleConsonant");
+		retStrings[variationCounter++]= rRepeat.apply(word, oword); 
+		
+		
+		/*
+		// E. APPLICATION OF MORE THAN ONE MISTAKE BY PICKING A RANDOM RULE
+		int NumOfVariationsWithXMistakesToMake = 10; // how many variations of the words to try to create  // 
+		int NumMistakesToMake =3; // num of mistakes to try create over the same  word
+		Random rand = new Random(); //instance of random class
+		for (int i=0; i<NumOfVariationsWithXMistakesToMake; i++) { // for each variation to be created
+			StringBuilder oword = new StringBuilder(word); // new builder
+			for (int j=0; j<NumMistakesToMake; j++) { // 
+				int ruleIndex = rand.nextInt(rules.length); // index of a random rule 
+				if (word!=null) // the previous application did not return null 
+					retStrings[variationCounter++]= rules[ruleIndex].apply(word, oword); 
+				if (word!=null)  // updating the current word (for applying the next typo on that
+					word=oword.toString();
+			}
+		}
+		*/
+		
+		// E.  Return of the variations
+		// E1. Eliminate null values
+		retStrings = Arrays.stream(retStrings).filter(Objects::nonNull).toArray(String[]::new);
+		// E2. Eliminate duplicates
+		retStrings = Arrays.stream(retStrings).distinct().toArray(String[]::new);
+		// E3. Delete the correct word
+		String correctWord = word;
+		retStrings = Arrays.stream(retStrings).filter(e->e.compareTo(correctWord)!=0).toArray(String[]::new);
+		return retStrings;
+	}
+	
+	
+	
+	public static void main(String[] args) {
+		System.out.println("[DictionaryBasedMeasurements]-start");
+		
+		//performMeasurements("Resources/dictionaries/EN-winedt/gr.dic");  // for general measurements over the dictionary
+		createEvaluationDataset("Resources/dictionaries/EN-winedt/gr.dic",	"Resources/names/dictionaryBased.txt"); // produces a dataset with synthetic errors
+		
+		System.out.println("[DictionaryBasedMeasurements]-complete");
 	}
 
 }
