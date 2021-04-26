@@ -49,7 +49,7 @@ public class Tokenizer {
 	static public  ArrayList<String> getTokens(String s) {
 		ArrayList<String>  tokens = new ArrayList<>();
 		s = removePunctuation(s); 
-		System.out.println(s);
+		//System.out.println(s);
 		StringTokenizer tokenizer = new StringTokenizer(s, delimiter+lineDelimiters);
 		while(tokenizer.hasMoreTokens() ) {
 			String currentToken = tokenizer.nextToken();

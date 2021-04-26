@@ -6,6 +6,8 @@ package evaluation;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -27,6 +30,9 @@ import stemmerWrapper.StemmerWrapper;
  * It performs measurements over a dictionary and used the dictionary for producing synthetic datasets for evaluating the performance of matching algorithms
  */
 public class DictionaryBasedMeasurements {
+	
+	static Map<String, HashSet<String>> codesToWords = null; 
+	private static Set<String >wordsSet = null;
 	
 	// to complete:
 	static char[] vowels = {'α','ε','η','υ','ι','ο','ω',
@@ -81,7 +87,9 @@ public class DictionaryBasedMeasurements {
 	 * It also can 
 	 * @param path  the file path of the dictionary
 	 */
-	public static void performMeasurements(String path) {
+	public static void performMeasurements(BufferedReader bfr) {
+	//public static void performMeasurements(String path) {
+				
 			int counter = 0;  // word counter
 			int totalCharNum = 0;
 			int wordMinSize = Integer.MAX_VALUE;
@@ -102,8 +110,22 @@ public class DictionaryBasedMeasurements {
 	        Map<String, HashSet<String>> codesAndWords = new HashMap<>(); // for code analytics     
 	        	        
 			try {
+				/**
+				 * For the case where the parameter were a path
+				 */
+				/*
 				FileReader fl = new FileReader(path);
 		        BufferedReader bfr = new BufferedReader(fl);	
+		        */
+				
+				
+		        
+		        /*
+		        InputStream in = getClass().getResourceAsStream("/file.txt"); 
+		        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		        */
+		        
+		        
 		        startTime = System.nanoTime();
 		        while ((line = bfr.readLine()) != null) {
 		        	counter++; // counting words
@@ -177,6 +199,76 @@ public class DictionaryBasedMeasurements {
 	}
 	
 	
+	/**
+	 * 
+	 * @param word
+	 * @return
+	 */
+	
+	/**
+	 * @return
+	 */
+	public static Set<String> getWords() {
+		return wordsSet;
+	}
+	
+	public static boolean lookup(String word) {
+		
+		if  (wordsSet==null) { // the dictionary has not been processed
+			wordsSet = new HashSet<>(); // for code analytics    
+			String line;
+
+				try {
+					FileReader fl = new FileReader("Resources/dictionaries/EN-winedt/gr.dic");
+					BufferedReader bfr = new BufferedReader(fl);	
+					while ((line = bfr.readLine()) != null) {
+						wordsSet.add(line);	
+					}
+					bfr.close();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+				//System.out.println(codesToWords);
+				//System.out.println("Dictionary was read, number of keys = " + codesToWords.keySet().size());
+		}		
+		return wordsSet.contains(word);
+		
+	}
+	
+	/**
+	 * @param token
+	 * @return
+	 */
+	public static Set<String> returnWordsHavingTheSameCode(String code) {
+		if  (codesToWords==null) { // the dictionary has not been processed
+			codesToWords = new HashMap<>(); // for code analytics    
+			String line;
+			System.out.println("Starting encoding the dictionary with code length " +SoundexGRExtra.LengthEncoding);
+
+				try {
+					FileReader fl = new FileReader("Resources/dictionaries/EN-winedt/gr.dic");
+					BufferedReader bfr = new BufferedReader(fl);	
+					while ((line = bfr.readLine()) != null) {
+						String      wordEncoded = SoundexGRExtra.encode(line); 
+						HashSet wordsWithThatCode = codesToWords.get(wordEncoded);
+						if (wordsWithThatCode==null) { // the code is not in the map
+							wordsWithThatCode = new HashSet();
+							wordsWithThatCode.add(line);
+							codesToWords.put(wordEncoded,wordsWithThatCode);
+						} else {
+							wordsWithThatCode.add(line);
+						}
+					}
+					bfr.close();
+				} catch (Exception e) {
+					System.out.println(e);
+				}
+				//System.out.println(codesToWords);
+				System.out.println("Dictionary was read, number of keys = " + codesToWords.keySet().size());
+		}		
+		return codesToWords.get(code);
+	}
+	
 	
 	
 	/**
@@ -226,8 +318,7 @@ public class DictionaryBasedMeasurements {
 	 * Creates and returns erroneous variations of the param word
 	 * @param word
 	 * @return
-	 * TODO
-	 * Na exw kai leseis me >1 lathi
+	 * 
 	 */
 	static public String[] returnVariations(String word) {
 		return returnVariationsNew(word);
@@ -459,14 +550,39 @@ public class DictionaryBasedMeasurements {
 	}
 	
 	
+	static void  methodTest() {
+		
+		String relPath = "/dictionaries/EN-winedt/gr.dic";    // accesible also if packaged within  the jar
+		
+		InputStream inDict = DictionaryBasedMeasurements.class.getResourceAsStream(relPath); 
+		BufferedReader readerDict = new BufferedReader(new InputStreamReader(inDict));
+		
+		performMeasurements(readerDict);  
+		
+			
+		
+	}
 	
 	public static void main(String[] args) {
 		System.out.println("[DictionaryBasedMeasurements]-start");
 		
-		//performMeasurements("Resources/dictionaries/EN-winedt/gr.dic");  // for general measurements over the dictionary
+		
+		methodTest();
+		/*
+		// The following work only within the IDE
+		performMeasurements("Resources/dictionaries/EN-winedt/gr.dic");  // for general measurements over the dictionary
+		
+		*/
+		
 		createEvaluationDataset("Resources/dictionaries/EN-winedt/gr.dic",	"Resources/names/dictionaryBased.txt"); // produces a dataset with synthetic errors
 		
 		System.out.println("[DictionaryBasedMeasurements]-complete");
 	}
+
+
+	
+
+
+	
 
 }

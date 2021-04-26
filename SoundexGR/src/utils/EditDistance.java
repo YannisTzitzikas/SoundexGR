@@ -9,10 +9,15 @@ package utils;
 // Adapted from code given in https://www.geeksforgeeks.org/edit-distance-dp-5/
 
 import java.util.*;
-class EditDistance
+public class EditDistance
 {
-
-static int EditDistDP(String str1, String str2)
+/**
+ * Returns the edit distance between the two strings
+ * @param str1
+ * @param str2
+ * @return
+ */
+public static int EditDistDP(String str1, String str2)
 {
  int len1 = str1.length();
  int len2 = str2.length();
