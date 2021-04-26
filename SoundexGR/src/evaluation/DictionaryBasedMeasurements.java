@@ -235,7 +235,7 @@ public class DictionaryBasedMeasurements {
 					while ((line = bfr.readLine()) != null) {
 						wordsSet.add(line);	
 					}
-					bfr.close(); // sos
+					//bfr.close(); // sos
 				} catch (Exception e) {
 					System.out.println(e);
 				}
@@ -261,6 +261,11 @@ public class DictionaryBasedMeasurements {
 					InputStream inDict = DictionaryBasedMeasurements.class.getResourceAsStream(placeDict); 
 					BufferedReader bfr = new BufferedReader(new InputStreamReader(inDict));
 					
+					
+					System.out.println("placeDict:"+placeDict);
+					System.out.println("PlaceDictAsResource:"  + DictionaryBasedMeasurements.class.getResource(placeDict).getPath());
+					
+					
 					//FileReader fl = new FileReader("Resources/dictionaries/EN-winedt/gr.dic");
 					//BufferedReader bfr = new BufferedReader(fl);	
 					while ((line = bfr.readLine()) != null) {
@@ -274,12 +279,12 @@ public class DictionaryBasedMeasurements {
 							wordsWithThatCode.add(line);
 						}
 					}
-					bfr.close();
+					//bfr.close(); /// sos
 				} catch (Exception e) {
 					System.out.println(e);
 				}
 				//System.out.println(codesToWords);
-				System.out.println("Dictionary was read, number of keys = " + codesToWords.keySet().size());
+				System.out.println("Dictionary was read, number of phonetic keys = " + codesToWords.keySet().size());
 		}		
 		return codesToWords.get(code);
 	}
