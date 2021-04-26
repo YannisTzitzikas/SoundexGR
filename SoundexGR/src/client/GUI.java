@@ -42,6 +42,7 @@ import SoundexGR.SoundexGRExtra;
 import SoundexGR.SoundexGRSimple;
 import evaluation.DictionaryBasedMeasurements;
 import evaluation.DictionaryMatcher;
+import utils.Tokenizer;
 
 //import filesMgmt.FileReadingUtils;
 
@@ -541,14 +542,17 @@ class Dashboard  extends JFrame {
 public class GUI {
 	static String appName = "SoundexGR v0.2";
 	static String exampleInputString =
-			"αυγό  αβγό "
-			+ "θαύμα θάβμα θαυμαστικό "  
-			+ "ξέρω  κσαίρο " 
-			+ "αύξων άφξον " 
-			+  "εύδοξος εβδοξος "
-			+ "έτοιμος έτιμος έτημος έτυμος έτιμως αίτημος "
-			+ "μήνυμα μύνοιμα"
-			 ;
+			"μύνοιμα διάλιμα";
+			/*
+					"αυγό  αβγό "
+					+ "θαύμα θάβμα θαυμαστικό "  
+					+ "ξέρω  κσαίρο " 
+					+ "αύξων άφξον " 
+					+  "εύδοξος εβδοξος "
+					+ "έτοιμος έτιμος έτημος έτυμος έτιμως αίτημος "
+					+ "μήνυμα μύνοιμα"
+					 ;
+			*/
 	static String aboutMsg = "About ... ";
 			//FileReadingUtils.readFileAsString("README.txt");
 	

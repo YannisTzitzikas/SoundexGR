@@ -321,7 +321,7 @@ public class BulkCheck {
     	
     	//performExperimentsWithStemmer();  // evaluation of a Greek stemmer   (status: ok)
     	//performExperiments(0,4); // 1st arg. word limit, 2nd code length  (status: ok)
-    	performExperimentsForDatasetSizes(); // performs experiments for various data sizes (status:ok)
+    	//performExperimentsForDatasetSizes(); // performs experiments for various data sizes (status:ok)
     	
 
     	System.out.println("[BulkCheck]-complete");

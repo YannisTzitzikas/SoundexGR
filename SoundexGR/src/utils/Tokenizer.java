@@ -1,7 +1,7 @@
 /**
  * 
  */
-package client;
+package utils;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
