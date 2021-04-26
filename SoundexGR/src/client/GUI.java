@@ -44,8 +44,6 @@ import evaluation.DictionaryBasedMeasurements;
 import evaluation.DictionaryMatcher;
 import utils.Tokenizer;
 
-//import filesMgmt.FileReadingUtils;
-
 
 
 /**
@@ -204,8 +202,7 @@ class Dashboard  extends JFrame {
     static JTextArea textOutputArea;
     
     static Dimension textAreaDimension = new Dimension(50, 10);
-	
-    
+	    
     static JButton soundexB;
     static JButton soundexNaiveB;
     static JButton pnoneticB;
@@ -261,10 +258,10 @@ class Dashboard  extends JFrame {
 		try {
 			ImageIcon icon;
 			String path = "/icon.png";  // works "/icon.png"
-			System.out.println(getClass().getResource(path)); // "/"
+			//System.out.println(getClass().getResource(path)); // "/"
 			java.net.URL imgURL = getClass().getResource(path);	
 			if (imgURL != null) {
-				System.out.println(">>>"+imgURL);
+				//System.out.println(">>>"+imgURL);
 				icon = new ImageIcon(imgURL, "Eikonidio");
 				this.setIconImage(icon.getImage());
 			} else {
@@ -360,6 +357,7 @@ class Dashboard  extends JFrame {
 		textOutputArea.setFont(appTextfont);
 		textOutputArea.setLineWrap(true);
 		textOutputArea.setWrapStyleWord(true);
+		
 	
 		
 		JScrollPane areaScrollPane = new JScrollPane(textOutputArea);
@@ -382,7 +380,6 @@ class Dashboard  extends JFrame {
 	/**
 	 * Creates the buttons for the general operators
 	 */
-	
 	
 	void createGeneralOperators(JPanel parentPanel) {
 		//JPanel generalOperatorPanel = new JPanel(new GridLayout(1,0,5,5)); // rows, columns, int hgap, int vgap)
@@ -540,7 +537,7 @@ class Dashboard  extends JFrame {
 }
 
 public class GUI {
-	static String appName = "SoundexGR v0.2";
+	static String appName = "SoundexGR Editor v0.2";
 	static String exampleInputString =
 			"μύνοιμα διάλιμα";
 			/*
