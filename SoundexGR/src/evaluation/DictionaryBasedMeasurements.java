@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -51,7 +52,12 @@ public class DictionaryBasedMeasurements {
 	static public void setDictionaryLocation(String resourcePlace) {
 		placeDict=resourcePlace;
 		InputStream inDict = DictionaryBasedMeasurements.class.getResourceAsStream(placeDict); 
-		readerDict = new BufferedReader(new InputStreamReader(inDict));
+		try {
+			readerDict = new BufferedReader(new InputStreamReader(inDict,"UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -227,7 +233,7 @@ public class DictionaryBasedMeasurements {
 				try {
 					//lola1
 					InputStream inDict = DictionaryBasedMeasurements.class.getResourceAsStream(placeDict); 
-					BufferedReader bfr = new BufferedReader(new InputStreamReader(inDict));
+					BufferedReader bfr = new BufferedReader(new InputStreamReader(inDict,"UTF-8"));
 					/*
 					FileReader fl = new FileReader("Resources/dictionaries/EN-winedt/gr.dic");
 					BufferedReader bfr = new BufferedReader(fl);	
@@ -259,7 +265,7 @@ public class DictionaryBasedMeasurements {
 				try {
 					//lola2
 					InputStream inDict = DictionaryBasedMeasurements.class.getResourceAsStream(placeDict); 
-					BufferedReader bfr = new BufferedReader(new InputStreamReader(inDict));
+					BufferedReader bfr = new BufferedReader(new InputStreamReader(inDict,"UTF-8"));
 					
 					
 					System.out.println("placeDict:"+placeDict);
@@ -269,6 +275,8 @@ public class DictionaryBasedMeasurements {
 					//FileReader fl = new FileReader("Resources/dictionaries/EN-winedt/gr.dic");
 					//BufferedReader bfr = new BufferedReader(fl);	
 					while ((line = bfr.readLine()) != null) {
+						System.out.println(line); // lala
+						//System.err.println(line); // lala
 						String      wordEncoded = SoundexGRExtra.encode(line); 
 						HashSet wordsWithThatCode = codesToWords.get(wordEncoded);
 						if (wordsWithThatCode==null) { // the code is not in the map
