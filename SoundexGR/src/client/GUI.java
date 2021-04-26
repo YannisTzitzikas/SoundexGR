@@ -79,7 +79,8 @@ class AppController implements ActionListener {
 			int lenBefore =  Dashboard.getAppSoundexCodeLen();
 			String selected = (String)Dashboard.codeLenghtsC.getSelectedItem();
 			int selectedInt= new Integer(selected);
-			Dashboard.setAppSoundexCodeLen(selectedInt);
+			DictionaryBasedMeasurements.invalidateMap();
+			Dashboard.setAppSoundexCodeLen(selectedInt); // TODO here it should make refresh (recompute the codes)
 			System.out.printf("Code length changed from %d to %d.", lenBefore,Dashboard.getAppSoundexCodeLen());
 		}
 		
@@ -240,8 +241,11 @@ class Dashboard  extends JFrame {
      
 	static void loadOrRefreshDictionary() {
 		//Loading the dictionary (one getMatching initiates its loading)
-		new Thread( () -> 	{DictionaryMatcher.getMatchings("αυγόβββ", Dashboard.getAppSoundexCodeLen());}).start();
-		System.out.println("Dictionary loaded/refreshed.");
+		new Thread( () -> 	{
+			DictionaryMatcher.getMatchings("αυγόβββ", Dashboard.getAppSoundexCodeLen());
+			System.out.println("Dictionary loaded/refreshed.");
+		}).start();
+		
 	}
     
     /**

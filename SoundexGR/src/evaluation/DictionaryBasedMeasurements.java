@@ -568,5 +568,14 @@ public class DictionaryBasedMeasurements {
 	}
 
 
+	/**
+	 * 
+	 */
+	public static void invalidateMap() {
+		codesToWords = null;  // TODO to check
+		
+	}
+
+
 
 }
