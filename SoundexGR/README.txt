@@ -46,13 +46,14 @@ A Soundex-like phonetic algorithm for the Greek language.
 </pre>
 
 # Context
- This work has been done in the context of the Diploma thesis of Antrei Kavros under the supervision of Yannis Tzitzikas,
+ This work has started in the context of the Diploma thesis of Antrei Kavros under the supervision of Yannis Tzitzikas,
  in the Computer Science Department of the  University of Crete, GREEECE.
  
  
  # How to Run:
  * client/Examples: prints indicative examples
  * client/Prompt: for computing the codes for words inputed through the  command line
+ * client/GUI:  a graphical editor for testing the production of codes and testing and comparing approximate matching
  * evaluation/BulkCheck: for running  experiments  over an evaluation collection that is included (in the folder Resources)
  
  # Persons Involved:
