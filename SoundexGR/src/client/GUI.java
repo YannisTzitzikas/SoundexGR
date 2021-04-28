@@ -10,6 +10,8 @@ package client;
 
 
 import java.awt.Color;
+import java.awt.ComponentOrientation;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -20,6 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Set;
@@ -32,11 +35,15 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import SoundexGR.SoundexGRExtra;
 import SoundexGR.SoundexGRSimple;
@@ -301,6 +308,8 @@ class Dashboard  extends JFrame {
 		createGeneralOperators(generalInputPanel);
 		createOutput(null);
 		
+		createMenu ();
+		
 		setVisible(true);
 		
         this.addWindowListener(new WindowAdapter() {
@@ -310,6 +319,42 @@ class Dashboard  extends JFrame {
             }
         });
 	}
+	
+	/*
+	 * Menu bar
+	 */
+	
+	void createMenu (){
+		JMenuBar 	menuBar 	= new JMenuBar();
+		JMenu 		helpMenu 	= new JMenu("Help");
+		JMenuItem 	aboutOption = new JMenuItem("About");
+		String 		URLofGitHub	="https://github.com/YannisTzitzikas/SoundexGR";
+		
+		// layout
+		menuBar.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT); 
+		
+		// behaviour
+		aboutOption.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	Dashboard.textOutputArea.setText("See "+ URLofGitHub);
+            	if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            	    try {Desktop.getDesktop().browse(new URI(URLofGitHub));}
+            	    catch (Exception ex) {ex.printStackTrace();}
+            	}
+        		
+        }});
+		
+		//adding the menus
+		helpMenu.add(aboutOption);
+		menuBar.add(helpMenu);
+		add(menuBar); 
+		
+		setJMenuBar(menuBar);
+		menuBar.setVisible(true);
+		menuBar.setEnabled(true);
+	}
+	
+	
 	/**
 	 * Create gui elements for the input
 	 */
@@ -543,7 +588,7 @@ class Dashboard  extends JFrame {
 public class GUI {
 	static String appName = "SoundexGR Editor v0.2";
 	static String exampleInputString =
-			"μύνοιμα διάλιμα";
+			"μήνυμα μύνοιμα διάλειμμα διάλιμα αύξων άφξον";
 			/*
 					"αυγό  αβγό "
 					+ "θαύμα θάβμα θαυμαστικό "  
