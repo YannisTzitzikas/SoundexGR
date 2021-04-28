@@ -66,7 +66,6 @@ class AppController implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		
 		// Clear BUTTON
 		if (event.getSource()==Dashboard.clearB ) {
 			//System.out.println("Clear Pressed");
