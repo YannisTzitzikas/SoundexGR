@@ -45,7 +45,7 @@ A Soundex-like phonetic algorithm for the Greek language.
 </pre>
 
 # Context
- This work has been done in the context of the Diploma thesis of Antrei Kavros under the supervision of Yannis Tzitzikas,
+ This work has started in the context of the Diploma thesis of Antrei Kavros under the supervision of Yannis Tzitzikas,
  in the Computer Science Department of the  University of Crete, GREEECE.
  
  
@@ -56,7 +56,7 @@ A Soundex-like phonetic algorithm for the Greek language.
  
  # More Information:
  More information is available in the following paper:
- * Antrei Kavros and Yannis Tzitzikas, A Soundex-like Algorithm for the Greek Language, (under submission), 2020
+ * Antrei Kavros and Yannis Tzitzikas, A Soundex-like Algorithm for the Greek Language, (under submission), 2020-2021
  
  # Persons Involved:
  * Antrei Kavros
