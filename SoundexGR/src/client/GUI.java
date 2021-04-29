@@ -21,7 +21,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -207,6 +210,7 @@ class Dashboard  extends JFrame {
 	
 	static JTextArea textInputArea;
     static JTextArea textOutputArea;
+    static JTextArea consoleOutputArea;
     
     static Dimension textAreaDimension = new Dimension(50, 10);
 	    
@@ -225,6 +229,7 @@ class Dashboard  extends JFrame {
     static JButton swapB;
     
     static Font appTextfont =    new Font("monospaced", Font.BOLD, 18);  //  Font.PLAIN Font.BOLD
+    static Font consoleTextfont =    new Font("monospaced", Font.PLAIN, 12);  //  Font.PLAIN Font.BOLD
     static Font appButtonfont =    new Font("serif", Font.PLAIN, 18);
     
     private static int   appSoundexCodeLen = 6 ; 
@@ -305,6 +310,7 @@ class Dashboard  extends JFrame {
 		createPhonemicOperators(generalInputPanel);
 		createMatchingOperators(generalInputPanel);
 		createGeneralOperators(generalInputPanel);
+		createConsoleOutput(generalInputPanel);  redirectSystemStreams();
 		createOutput(null);
 		
 		createMenu ();
@@ -424,6 +430,40 @@ class Dashboard  extends JFrame {
 	} // create output
 	
 	
+	
+	void createConsoleOutput(JPanel parentPanel) {
+		JPanel consolePanel = new JPanel(new GridLayout(1,1,5,5)); // rows, columns, int hgap, int vgap)
+		consolePanel.setBorder(BorderFactory.createTitledBorder(
+		        BorderFactory.createEtchedBorder(), "Console output"));
+		
+		// A: OUTPUT TEXT AREA
+		//JTextArea 
+		consoleOutputArea = new JTextArea(
+			    "Console output"
+			);
+		//textOutputArea.setFont(new Font("Courier", NORMAL, 22));  //
+		consoleOutputArea.setFont(consoleTextfont);
+		consoleOutputArea.setLineWrap(true);
+		consoleOutputArea.setWrapStyleWord(true);
+		consoleOutputArea.setEditable(false);
+		
+	
+		
+		JScrollPane areaScrollPane = new JScrollPane(consoleOutputArea);
+		areaScrollPane.setVerticalScrollBarPolicy(
+		                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		areaScrollPane.setPreferredSize(textAreaDimension);
+		
+		consolePanel.add(areaScrollPane); 
+		//add(outputPanel); // adds to Frame
+		if (parentPanel==null) { // if no parent panel
+			this.add(consolePanel); // adds to Frame
+		} else {
+			parentPanel.add(consolePanel);
+		}
+		
+	} // create output
+	 
 	
 	/**
 	 * Creates the buttons for the general operators
@@ -581,7 +621,43 @@ class Dashboard  extends JFrame {
 			parentPanel.add(operatorPanel);
 		}
 	}
-				
+	
+	
+	/**
+	 * 
+	 * @param text
+	 */
+	private void updateConsoleTextArea(final String text) {
+	    SwingUtilities.invokeLater(new Runnable() {
+	      public void run() {
+	    	  consoleOutputArea.append(text);
+	        
+	      }
+	    });
+	  }
+	
+	
+	private void redirectSystemStreams() {
+	    OutputStream out = new OutputStream() {
+	      @Override
+	      public void write(int b) throws IOException {
+	    	  updateConsoleTextArea(String.valueOf((char) b));
+	      }
+
+	      @Override
+	      public void write(byte[] b, int off, int len) throws IOException {
+	    	  updateConsoleTextArea(new String(b, off, len));
+	      }
+
+	      @Override
+	      public void write(byte[] b) throws IOException {
+	        write(b, 0, b.length);
+	      }
+	    };
+
+	    System.setOut(new PrintStream(out, true));
+	    System.setErr(new PrintStream(out, true));
+	  }
 }
 
 public class GUI {
