@@ -56,7 +56,7 @@ A Soundex-like phonetic algorithm for the Greek language.
  
  # More Information:
  More information is available in the following paper:
- * Antrei Kavros and Yannis Tzitzikas, A Soundex-like Algorithm for the Greek Language, (under submission), 2020-2021
+ * Antrei Kavros and Yannis Tzitzikas, SoundexGR: An Algorithm for Phonetic Matching for the Greek Language, Natural Language Engineering, (accepted for publication), 2022
  
  # Persons Involved:
  * Antrei Kavros
